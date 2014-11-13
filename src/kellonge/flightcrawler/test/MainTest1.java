@@ -1,4 +1,4 @@
-package com.kellonge.test;
+package kellonge.flightcrawler.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,6 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Selectable;
-import us.codecraft.webmagic.selector.Xpath2Selector;
 
 public class MainTest1 implements PageProcessor {
 	private static final String OUTPUTPATH = "/home/kellonge/Test";
@@ -29,8 +28,6 @@ public class MainTest1 implements PageProcessor {
 	public void process(Page page) {
 		if (page.getUrl().regex("/WEB/Flight/FlightSearchResultDefault.aspx")
 				.match()) {
-
-			System.out.println("3");
 			page.putField(
 					"deptInfo",
 					page.getHtml().xpath(
@@ -94,8 +91,6 @@ public class MainTest1 implements PageProcessor {
 				}
 				page.putField("data", datas);
 			} else {
-
-				System.out.println("2");
 				page.setSkip(true);
 			}
 		} else {
@@ -103,7 +98,6 @@ public class MainTest1 implements PageProcessor {
 					.getHtml()
 					.regex("/WEB/Flight/FlightSearchResultDefault.aspx.*(?='\\))",
 							0).get());
-			System.out.println("1");
 			page.setSkip(true);
 		}
 	}
@@ -125,8 +119,8 @@ public class MainTest1 implements PageProcessor {
 								citys[i], citys[j]));
 			}
 		}
- 
 
+		urls = urls.subList(0, 10);
 		Spider.create(new MainTest1()).thread(10)
 				.addUrl(urls.toArray(new String[urls.size()]))
 				.addPipeline(new ConsolePipeline())
