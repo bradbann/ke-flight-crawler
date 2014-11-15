@@ -9,8 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.JMException;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import com.google.common.util.concurrent.Monitor;
 
 import kellonge.flightcrawler.model.Flight;
 import kellonge.flightcrawler.model.FlightPrice;
@@ -18,6 +22,7 @@ import kellonge.flightcrawler.utils.DateUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.monitor.SpiderMonitor;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -118,25 +123,28 @@ public class MainTest1 implements PageProcessor {
 
 	public static void main(String[] args) {
 		List<String> urls = new ArrayList<String>();
-		// for (int i = 0; i < citys.length; i++) {
-		// for (int j = 0; j < citys.length; j++) {
-		// if (i == j) {
-		// break;
-		// }
-		// urls.add(String
-		// .format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=%s&DC=%s&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true",
-		// citys[i], citys[j]));
-		// }
-		// }
-		urls.add(String
-				.format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=PEK&DC=SHA&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true"));
-		urls.add(String
-				.format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=SHA&DC=PEK&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true"));
+		for (int i = 0; i < citys.length; i++) {
+			for (int j = 0; j < citys.length; j++) {
+				if (i == j) {
+					break;
+				}
+				urls.add(String
+						.format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=%s&DC=%s&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true",
+								citys[i], citys[j]));
+			}
+		}
 
-		Spider.create(new MainTest1()).thread(10)
+		Spider flightCrawler = Spider.create(new MainTest1()).thread(10)
 				.addUrl(urls.toArray(new String[urls.size()]))
 				.addPipeline(new ToDatebasePipline())
-				.addPipeline(new ConsolePipeline()).start();
+				.addPipeline(new ConsolePipeline());
+		try {
+			SpiderMonitor.instance().register(flightCrawler);
+		} catch (JMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		flightCrawler.start();
 
 	}
 
