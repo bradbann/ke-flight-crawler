@@ -1,4 +1,4 @@
-package kellonge.filightcrawler.model;
+package kellonge.flightcrawler.model;
 
 public class FlightPrice {
 

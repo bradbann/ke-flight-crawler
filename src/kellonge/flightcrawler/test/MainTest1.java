@@ -1,5 +1,7 @@
 package kellonge.flightcrawler.test;
 
+import java.io.Console;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,9 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kellonge.filightcrawler.model.Flight;
-import kellonge.filightcrawler.model.FlightPrice;
-import kellonge.filightcrawler.utils.DateUtils;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import kellonge.flightcrawler.model.Flight;
+import kellonge.flightcrawler.model.FlightPrice;
+import kellonge.flightcrawler.utils.DateUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -19,6 +24,10 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Selectable;
 
 public class MainTest1 implements PageProcessor {
+
+	public static SessionFactory sessionFactory = new Configuration()
+			.configure().buildSessionFactory();
+
 	private static final String OUTPUTPATH = "/home/kellonge/Test";
 	private Site site = Site.me().setCycleRetryTimes(3).setRetryTimes(3)
 			.setSleepTime(1000).setTimeOut(10000)
@@ -29,17 +38,13 @@ public class MainTest1 implements PageProcessor {
 		if (page.getUrl().regex("/WEB/Flight/FlightSearchResultDefault.aspx")
 				.match()) {
 			page.putField(
-					"deptInfo",
+					"FlightInfo",
 					page.getHtml().xpath(
 							"//div[@class='layout2_title3']/text()"));
-			page.putField("deptDate",
+
+			page.putField("ExpiredDate",
 					page.getHtml().xpath("//div[@class='layout2_title3']")
 							.regex("\\d{4}-\\d{1,2}-\\d{1,2}"));
-			page.putField(
-					"flightInfo",
-					page.getHtml()
-							.xpath("//div[@id='FlightListFlight0']/div[@class='menu_layout2']/tidyText()")
-							.all());
 			List<Selectable> flightInfoNode = page
 					.getHtml()
 					.xpath("//div[@id='FlightListFlight0']/div[@class='menu_layout2']")
@@ -53,12 +58,20 @@ public class MainTest1 implements PageProcessor {
 				Map<Flight, List<FlightPrice>> datas = new HashMap<>();
 				for (int i = 0; i < flightInfoNode.size(); i++) {
 					Flight flight = new Flight();
+					flight.setFlag(1);
+					flight.setExpiredDate(DateUtils.parse(page.getResultItems()
+							.get("ExpiredDate").toString(),
+							DateUtils.FORMAT_SHORT));
 					flight.setAirLineName(flightInfoNode.get(i)
 							.xpath("//div[@class='menu_top1']/text()")
 							.toString().trim());
 					flight.setFlightNo(flightInfoNode.get(i)
 							.xpath("//span[@class='red_font']/text()")
 							.toString().trim());
+					flight.setPlanModel(flightInfoNode.get(i)
+							.xpath("//div[@class='menu_top2']/text()").nodes()
+							.get(1).regex("[a-zA-Z\\d]+").get());
+
 					flight.setDeptAirportName(priceInfoNode
 							.get(i)
 							.xpath("//div[@class='listone_layout']/div[@class='menu1_layout']/text()")
@@ -67,29 +80,25 @@ public class MainTest1 implements PageProcessor {
 							.get(i)
 							.xpath("//div[@class='listone_layout']/div[@class='menu1_layout']/text()")
 							.all().get(1).toString().trim());
-					flight.setDeptTime(DateUtils.parse(
-							String.format(
-									"%s %s",
-									page.getResultItems().get("deptDate"),
-									priceInfoNode
-											.get(i)
-											.xpath("//div[@class='listone_layout']/div[@class='menu2_layout']/text()")
-											.regex("\\d{2}:\\d{2}")),
-							"yyyy-MM-dd hh:mm"));
-					flight.setArrTime(DateUtils.parse(
-							String.format(
-									"%s %s",
-									page.getResultItems().get("deptDate"),
-									priceInfoNode
-											.get(i)
-											.xpath("//div[@class='listone_layout']/div[@class='menu2_layout']/text()")
-											.nodes().get(1)
-											.regex("\\d{2}:\\d{2}")),
-							"yyyy-MM-dd hh:mm"));
+
+					flight.setDeptTime(DateUtils
+							.parseTime(priceInfoNode
+									.get(i)
+									.xpath("//div[@class='listone_layout']/div[@class='menu2_layout']/text()")
+									.regex("\\d{2}:\\d{2}").get()
+									+ ":00"));
+					flight.setArrTime(DateUtils
+							.parseTime(priceInfoNode
+									.get(i)
+									.xpath("//div[@class='listone_layout']/div[@class='menu2_layout']/text()")
+									.nodes().get(1).regex("\\d{2}:\\d{2}")
+									.get()
+									+ ":00"));
+
 					datas.put(flight, null);
 
 				}
-				page.putField("data", datas);
+				page.putField("FlightDatas", datas);
 			} else {
 				page.setSkip(true);
 			}
@@ -109,22 +118,25 @@ public class MainTest1 implements PageProcessor {
 
 	public static void main(String[] args) {
 		List<String> urls = new ArrayList<String>();
-		for (int i = 0; i < citys.length; i++) {
-			for (int j = 0; j < citys.length; j++) {
-				if (i == j) {
-					break;
-				}
-				urls.add(String
-						.format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=%s&DC=%s&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true",
-								citys[i], citys[j]));
-			}
-		}
+		// for (int i = 0; i < citys.length; i++) {
+		// for (int j = 0; j < citys.length; j++) {
+		// if (i == j) {
+		// break;
+		// }
+		// urls.add(String
+		// .format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=%s&DC=%s&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true",
+		// citys[i], citys[j]));
+		// }
+		// }
+		urls.add(String
+				.format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=PEK&DC=SHA&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true"));
+		urls.add(String
+				.format("http://webflight.linkosky.com/WEB/Flight/WaitingSearch.aspx?JT=1&OC=SHA&DC=PEK&DD=2014-11-20&DT=7&BD=&BT=7&AL=ALL&DR=true"));
 
-		urls = urls.subList(0, 10);
 		Spider.create(new MainTest1()).thread(10)
 				.addUrl(urls.toArray(new String[urls.size()]))
-				.addPipeline(new ConsolePipeline())
-				.addPipeline(new JsonFilePipeline(OUTPUTPATH)).start();
+				.addPipeline(new ToDatebasePipline())
+				.addPipeline(new ConsolePipeline()).start();
 
 	}
 

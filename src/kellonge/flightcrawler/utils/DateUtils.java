@@ -1,9 +1,12 @@
-package kellonge.filightcrawler.utils;
+package kellonge.flightcrawler.utils;
 
+import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * 日期工具类 默认使用 "yyyy-MM-dd HH:mm:ss" 格式化日期
@@ -201,5 +204,18 @@ public final class DateUtils {
 		c.setTime(parse(date, format));
 		long t1 = c.getTime().getTime();
 		return (int) (t / 1000 - t1 / 1000) / 3600 / 24;
+	}
+
+	/**
+	 * 将指定的时间转换成Time对象
+	 * @param time 时间字符串，格式为"hh:mm:ss"
+	 * @return 返回Time对象，转换错误则返回null
+	 */
+	public static Time parseTime(String time) {
+		Pattern pattern = Pattern.compile("\\d{2}:\\d{2}:\\d{2}");
+		if (pattern.matcher(time).matches()) {
+			return Time.valueOf(time);
+		}
+		return null;
 	}
 }
