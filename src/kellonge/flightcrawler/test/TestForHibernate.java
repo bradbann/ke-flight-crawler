@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.util.Date;
 
 import kellonge.flightcrawler.model.Flight;
-import kellonge.flightcrawler.utils.DateUtils;
+import kellonge.flightcrawler.utils.DateTimeUtils;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

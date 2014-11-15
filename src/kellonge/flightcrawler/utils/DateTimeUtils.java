@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * 日期工具类 默认使用 "yyyy-MM-dd HH:mm:ss" 格式化日期
  * 
  */
-public final class DateUtils {
+public final class DateTimeUtils {
 	/**
 	 * 英文简写（默认）如：2010-12-01
 	 */

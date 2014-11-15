@@ -3,7 +3,7 @@ package kellonge.flightcrawler.model;
 import java.sql.Time; 
 import java.util.Date;
 
-import kellonge.flightcrawler.utils.DateUtils;
+import kellonge.flightcrawler.utils.DateTimeUtils;
 
 public class Flight {
 
@@ -30,8 +30,8 @@ public class Flight {
 	@Override
 	public String toString() {
 		return String.format("%s(%s)  %s(%s)--%s(%s)", FlightNo, getAirLineName(),
-				DeptAirportName, DateUtils.format(DeptTime), ArrAirportName,
-				DateUtils.format(ArrTime));
+				DeptAirportName, DateTimeUtils.format(DeptTime), ArrAirportName,
+				DateTimeUtils.format(ArrTime));
 	}
 
 	public int getID() {

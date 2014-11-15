@@ -18,7 +18,7 @@ import com.google.common.util.concurrent.Monitor;
 
 import kellonge.flightcrawler.model.Flight;
 import kellonge.flightcrawler.model.FlightPrice;
-import kellonge.flightcrawler.utils.DateUtils;
+import kellonge.flightcrawler.utils.DateTimeUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -64,9 +64,9 @@ public class MainTest1 implements PageProcessor {
 				for (int i = 0; i < flightInfoNode.size(); i++) {
 					Flight flight = new Flight();
 					flight.setFlag(1);
-					flight.setExpiredDate(DateUtils.parse(page.getResultItems()
+					flight.setExpiredDate(DateTimeUtils.parse(page.getResultItems()
 							.get("ExpiredDate").toString(),
-							DateUtils.FORMAT_SHORT));
+							DateTimeUtils.FORMAT_SHORT));
 					flight.setAirLineName(flightInfoNode.get(i)
 							.xpath("//div[@class='menu_top1']/text()")
 							.toString().trim());
@@ -86,13 +86,13 @@ public class MainTest1 implements PageProcessor {
 							.xpath("//div[@class='listone_layout']/div[@class='menu1_layout']/text()")
 							.all().get(1).toString().trim());
 
-					flight.setDeptTime(DateUtils
+					flight.setDeptTime(DateTimeUtils
 							.parseTime(priceInfoNode
 									.get(i)
 									.xpath("//div[@class='listone_layout']/div[@class='menu2_layout']/text()")
 									.regex("\\d{2}:\\d{2}").get()
 									+ ":00"));
-					flight.setArrTime(DateUtils
+					flight.setArrTime(DateTimeUtils
 							.parseTime(priceInfoNode
 									.get(i)
 									.xpath("//div[@class='listone_layout']/div[@class='menu2_layout']/text()")
