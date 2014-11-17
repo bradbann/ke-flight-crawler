@@ -5,7 +5,7 @@ import java.util.Date;
 
 import kellonge.flightcrawler.utils.DateTimeUtils;
 
-public class Flight {
+public class FlightSchedule {
 
 	private int ID;
 	private String AirLineName;

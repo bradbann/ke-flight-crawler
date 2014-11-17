@@ -16,7 +16,7 @@ import org.hibernate.cfg.Configuration;
 
 import com.google.common.util.concurrent.Monitor;
 
-import kellonge.flightcrawler.model.Flight;
+import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.FlightPrice;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import us.codecraft.webmagic.Page;
@@ -60,9 +60,9 @@ public class MainTest1 implements PageProcessor {
 					.nodes();
 			if (!flightInfoNode.isEmpty() && !priceInfoNode.isEmpty()
 					&& flightInfoNode.size() == priceInfoNode.size()) {
-				Map<Flight, List<FlightPrice>> datas = new HashMap<>();
+				Map<FlightSchedule, List<FlightPrice>> datas = new HashMap<>();
 				for (int i = 0; i < flightInfoNode.size(); i++) {
-					Flight flight = new Flight();
+					FlightSchedule flight = new FlightSchedule();
 					flight.setFlag(1);
 					flight.setExpiredDate(DateTimeUtils.parse(page.getResultItems()
 							.get("ExpiredDate").toString(),

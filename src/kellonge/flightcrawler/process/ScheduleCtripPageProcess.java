@@ -12,8 +12,8 @@ import javax.management.JMException;
 import org.hibernate.Session;
 
 import kellonge.flightcrawler.model.City;
-import kellonge.flightcrawler.model.Flight;
-import kellonge.flightcrawler.pipline.SingleModelSavePipline; 
+import kellonge.flightcrawler.model.FlightSchedule;
+import kellonge.flightcrawler.pipline.SingleModelSavePipline;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.HibernateUtils;
 import us.codecraft.webmagic.Page;
@@ -27,12 +27,16 @@ import us.codecraft.webmagic.selector.Selectable;
 
 public class ScheduleCtripPageProcess implements PageProcessor {
 	private Site site = Site
-			.me()
+			.me()  
 			.addHeader(
 					"User-Agent",
 					"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36")
-			.setCycleRetryTimes(3).setRetryTimes(2).setSleepTime(2000)
+			.setCycleRetryTimes(3).setRetryTimes(2).setSleepTime(6000)
 			.setTimeOut(10000);
+
+	public ScheduleCtripPageProcess() {
+	 
+	}
 
 	@Override
 	public void process(Page page) {
@@ -40,9 +44,9 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 		City arrCity = (City) page.getRequest().getExtra("ArrCity");
 		List<Selectable> scheduleList = page.getHtml()
 				.$(".result_m_content tr").nodes();
-		List<Flight> flightList = new ArrayList<Flight>();
+		List<FlightSchedule> flightList = new ArrayList<FlightSchedule>();
 		for (Selectable schedule : scheduleList) {
-			Flight flight = new Flight();
+			FlightSchedule flight = new FlightSchedule();
 			flight.setFlag(1);
 			flight.setDataSource("CTRIP");
 			flight.setExpiredDate(DateTimeUtils.addDay(new Date(), 7));
@@ -99,7 +103,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			flightList.add(flight);
 
 		}
-		if (flightList.size()==0) {
+		if (flightList.size() == 0) {
 			page.setSkip(true);
 		}
 		// page.putField("ModelData", flightList);
@@ -148,9 +152,10 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 		}
 
 		Spider flightCrawler = Spider.create(new ScheduleCtripPageProcess())
-				.thread(5).addRequest(urls.toArray(new Request[urls.size()]))
-				.addPipeline(new SingleModelSavePipline<Flight>())
+				.thread(3).addRequest(urls.toArray(new Request[urls.size()]))
+				.addPipeline(new SingleModelSavePipline<FlightSchedule>())
 				.addPipeline(new ConsolePipeline());
+
 		try {
 			SpiderMonitor.instance().register(flightCrawler);
 		} catch (JMException e) {

@@ -3,7 +3,7 @@ package kellonge.flightcrawler.test;
 import java.sql.Time;
 import java.util.Date;
 
-import kellonge.flightcrawler.model.Flight;
+import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 
 import org.hibernate.Session;
@@ -18,7 +18,7 @@ public class TestForHibernate {
 		 .buildSessionFactory();
 		 Session session = sessionFactory.getCurrentSession();
 		 session.beginTransaction();
-		 Flight flight = new Flight();
+		 FlightSchedule flight = new FlightSchedule();
 		 flight.setAirLineName("东方航空");
 		 flight.setArrAirportName("杭州");
 		 flight.setArrCityName("杭州");

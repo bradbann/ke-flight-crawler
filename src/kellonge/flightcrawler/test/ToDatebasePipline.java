@@ -10,7 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import kellonge.flightcrawler.model.Flight;
+import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.FlightPrice;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -21,11 +21,11 @@ public class ToDatebasePipline implements Pipeline {
 	@Override
 	public void process(ResultItems resultItems, Task task) {
 
-		Map<Flight, List<FlightPrice>> FlightDatas = (Map<Flight, List<FlightPrice>>) resultItems
+		Map<FlightSchedule, List<FlightPrice>> FlightDatas = (Map<FlightSchedule, List<FlightPrice>>) resultItems
 				.get("FlightDatas");
 	 
 
-		for (Entry<Flight, List<FlightPrice>> item : FlightDatas.entrySet()) {
+		for (Entry<FlightSchedule, List<FlightPrice>> item : FlightDatas.entrySet()) {
 			Session session = MainTest1.sessionFactory.getCurrentSession();
 			session.beginTransaction();
 			session.save(item.getKey());

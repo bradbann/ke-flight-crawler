@@ -31,7 +31,7 @@
 		<!-- Drop and re-create the database schema on startup -->
 		<property name="hbm2ddl.auto">update</property>
 
-		<mapping resource="kellonge/flightcrawler/model/Flight.hbm.xml" />
+		<mapping resource="kellonge/flightcrawler/model/FlightSchedule.hbm.xml" />
 		<mapping resource="kellonge/flightcrawler/model/City.hbm.xml" />
 
 	</session-factory>
