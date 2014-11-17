@@ -25,6 +25,11 @@ public class Flight {
 	private String PlanModel;
 	private Date CreateDate;
 	private Date ExpiredDate;
+	private String DataSource;
+	private String ArrTerminal;
+	private String DeptTerminal;
+	private boolean IsStopOver;
+	private String WeekSchedule;	
 	private int Flag;
 
 	@Override
@@ -184,6 +189,46 @@ public class Flight {
 
 	public void setFlag(int flag) {
 		Flag = flag;
+	}
+
+	public String getDataSource() {
+		return DataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		DataSource = dataSource;
+	}
+
+	public String getArrTerminal() {
+		return ArrTerminal;
+	}
+
+	public void setArrTerminal(String arrTerminal) {
+		ArrTerminal = arrTerminal;
+	}
+
+	public String getDeptTerminal() {
+		return DeptTerminal;
+	}
+
+	public void setDeptTerminal(String deptTerminal) {
+		DeptTerminal = deptTerminal;
+	}
+
+	public boolean isIsStopOver() {
+		return IsStopOver;
+	}
+
+	public void setIsStopOver(boolean isStopOver) {
+		IsStopOver = isStopOver;
+	}
+
+	public String getWeekSchedule() {
+		return WeekSchedule;
+	}
+
+	public void setWeekSchedule(String weekSchedule) {
+		WeekSchedule = weekSchedule;
 	}
  
 

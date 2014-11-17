@@ -23,6 +23,11 @@
 		<property name="PlanModel" type="string" />
 		<property name="CreateDate" type="date" />
 		<property name="ExpiredDate" type="date" />
+		<property name="DataSource" type="string" />
+		<property name="ArrTerminal" type="string" />
+		<property name="DeptTerminal" type="string" />
+		<property name="IsStopOver" type="boolean" />
+		<property name="WeekSchedule" type="string" />
 		<property name="Flag" type="int" />
 	</class>
 </hibernate-mapping>
