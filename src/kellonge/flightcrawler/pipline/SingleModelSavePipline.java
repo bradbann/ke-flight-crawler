@@ -20,14 +20,17 @@ public class SingleModelSavePipline<T> implements Pipeline {
 	public void process(ResultItems resultItems, Task task) {
 		try {
 			List<T> modelData = (List<T>) resultItems.get("ModelData");
-			for (T t : modelData) {
-				Session session = HibernateUtils.getSessionFactory()
-						.getCurrentSession();
-				session.beginTransaction();
-				session.save(t);
-				session.getTransaction().commit();
-			}
+			if (modelData!=null) {
+				for (T t : modelData) {
+					Session session = HibernateUtils.getSessionFactory()
+							.getCurrentSession();
+					session.beginTransaction();
+					session.save(t);
+					session.getTransaction().commit();
+				}
 
+			}
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

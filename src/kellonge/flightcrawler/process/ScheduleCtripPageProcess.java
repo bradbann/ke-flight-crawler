@@ -99,6 +99,9 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			flightList.add(flight);
 
 		}
+		if (flightList.size()==0) {
+			page.setSkip(true);
+		}
 		// page.putField("ModelData", flightList);
 
 		// 分页
