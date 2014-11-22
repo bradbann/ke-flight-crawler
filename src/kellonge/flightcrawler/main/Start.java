@@ -1,9 +1,12 @@
 package kellonge.flightcrawler.main;
 
+import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
+import kellonge.flightcrawler.spider.ScheduleCtripSipder;
 
 public class Start {
 	public static void main(String[] args) {
-		ScheduleCtripPageProcess.GetSpider().start();
+		Configuration.init();
+		ScheduleCtripSipder.GetSpider().start();
 	}
 }
