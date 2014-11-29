@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<!-- user-agent for all spider -->
+	<user-agent>
+		<item
+			name="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1"></item>
+		<item
+			name="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0"></item>
+		<item
+			name="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50"></item>
+		<item
+			name="Opera/9.80 (Windows NT 6.1; U; zh-cn) Presto/2.9.168 Version/11.50"></item>
+		<item
+			name="Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3; .NET4.0C; Tablet PC 2.0; .NET4.0E)"></item>
+		<item
+			name="Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; InfoPath.3)"></item>
+		<item
+			name="Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; GTB7.0)"></item>
+		<item
+			name="Mozilla/5.0 (Windows; U; Windows NT 6.1; ) AppleWebKit/534.12 (KHTML, like Gecko) Maxthon/3.0 Safari/534.12"></item>
+		<item
+			name="Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3; .NET4.0C; .NET4.0E)"></item>
+		<item
+			name="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.41 Safari/535.1 QQBrowser/6.9.11079.201"></item>
+	</user-agent>
+	<proxy  >
+		<item ip="122.72.99.3" port="80" />
+		<item ip="122.72.28.118" port="80" />
+		<item ip="122.72.28.119" port="80" />
+		<item ip="122.72.28.117" port="80" />
+		<item ip="183.207.229.11" port="80" />
+		<item ip="183.207.229.12" port="80" />
+		<item ip="183.207.229.13" port="80" />
+		<item ip="183.207.229.10" port="80" />
+		<item ip="183.207.228.8" port="80" />
+		<item ip="183.207.228.120" port="80" />
+		<item ip="183.207.229.137" port="80" />
+		<item ip="183.207.229.138" port="80" />
+		<item ip="183.207.224.51" port="82" />
+		<item ip="183.207.224.51" port="83" />
+		<item ip="183.207.224.51" port="84" />
+		<item ip="183.207.224.48" port="80" />
+		<item ip="122.72.124.42" port="80" />
+		<item ip="183.207.224.46" port="80" />
+		<item ip="113.214.13.1" port="8000" />
+		<item ip="183.207.224.51" port="80" />
+		<item ip="221.183.16.219" port="80" />
+		<item ip="183.207.224.50" port="81" />
+		<item ip="111.7.129.151" port="80" />
+		<item ip="111.7.129.140" port="80" />
+		<item ip="183.207.224.49" port="80" />
+		<item ip="183.207.224.52" port="80" />
+		<item ip="111.7.129.141" port="80" />
+		<item ip="58.68.129.68" port="8888" />
+		<item ip="120.198.243.115" port="8888" />
+		<item ip="183.207.229.13" port="9000" />
+		<item ip="183.207.229.138" port="8090" />
+		<item ip="183.207.229.203" port="80" />
+		<item ip="183.207.229.138" port="8000" />
+		<item ip="183.207.229.138" port="8080" />
+		<item ip="120.198.243.53" port="80" />
+		<item ip="117.146.116.69" port="80" />
+		<item ip="218.207.208.55" port="8080" />
+		<item ip="223.72.181.50" port="3128" />
+		<item ip="120.198.243.52" port="80" />
+		<item ip="183.207.229.194" port="80" />
+		<item ip="120.198.243.50" port="80" />
+		<item ip="112.17.0.202" port="80" />
+		<item ip="111.11.184.116" port="80" />
+		<item ip="111.11.184.119" port="80" />
+		<item ip="117.146.116.67" port="80" />
+		<item ip="117.146.116.68" port="80" />
+		<item ip="183.207.229.195" port="80" />
+		<item ip="112.17.0.204" port="80" />
+		<item ip="111.11.184.13" port="80" />
+		<item ip="117.169.64.4" port="80" />
+	</proxy>
+	<crawler-common>
+		<!-- all cache file,result report etc. default is user.dir/data -->
+		<data-path></data-path>
+	</crawler-common>
+</root>
