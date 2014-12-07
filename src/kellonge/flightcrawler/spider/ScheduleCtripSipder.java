@@ -35,7 +35,8 @@ import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 
 public class ScheduleCtripSipder {
 
-	private static String filePath = Configuration.ROOT_PATH + "/error.txt";
+	private static String filePath = Configuration.ROOT_PATH
+			+ "/data/error.txt";
 	private static PrintWriter fileUrlWriter;
 
 	private static void initFlushThread() {
@@ -71,25 +72,22 @@ public class ScheduleCtripSipder {
 		for (int i = 0; i < citys.size(); i++) {
 			for (int j = 0; j < citys.size(); j++) {
 				Request request = new Request(String.format(
-						"http://flights.ctrip.com/schedule/bjs.kmg.html", citys
+						"http://flights.ctrip.com/schedule/%s.%s.html", citys
 								.get(i).getCityCode1(), citys.get(j)
 								.getCityCode1()));
-
-//				Map<String, Object> extent = new HashMap<String, Object>();
-//				extent.put("DeptCity", citys.get(i));
-//				extent.put("ArrCity", citys.get(j));
-//				request.setExtras(extent);
+				Map<String, Object> extent = new HashMap<String, Object>();
+				extent.put("DeptCity", citys.get(i));
+				extent.put("ArrCity", citys.get(j));
+				request.setExtras(extent);
 				request.putExtra("DeptCity", citys.get(i));
 				request.putExtra("ArrCity", citys.get(j));
-		 
+
 				urls.add(request);
 			}
 		}
 		PageProcessor processor = new ScheduleCtripPageProcess(
 				Configuration.getProxys(), Configuration.getUserAgents());
 
-		System.out.println(citys.size());
-		System.out.println(urls.size());
 		List<SpiderListener> listeners = new ArrayList<SpiderListener>();
 		listeners.add(listener);
 		Spider flightCrawler = Spider

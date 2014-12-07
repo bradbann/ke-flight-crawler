@@ -20,13 +20,12 @@ import us.codecraft.webmagic.selector.Selectable;
 public class ScheduleCtripPageProcess implements PageProcessor {
 	private Random random = new Random();
 	private String[] UserAgents;
-	private Site site = Site.me().setCycleRetryTimes(6).setSleepTime(2000)
+	private Site site = Site.me().setCycleRetryTimes(6).setSleepTime(6000)
 			.setTimeOut(10000);
 
 	public ScheduleCtripPageProcess(List<String[]> httpProxyList,
 			List<String> userAgents) {
 //		if (httpProxyList.size() > 0) {
-//
 //			site.setHttpProxyPool(httpProxyList);
 //		}
 		if (userAgents.size() > 0) {
@@ -37,7 +36,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 
 	@Override
 	public void process(Page page) {
-		site.setUserAgent(UserAgents[random.nextInt(UserAgents.length)]); 
+		site.setUserAgent(UserAgents[random.nextInt(UserAgents.length)]);
 		City deptCity = (City) page.getRequest().getExtra("DeptCity");
 		City arrCity = (City) page.getRequest().getExtra("ArrCity");
 		List<Selectable> scheduleList = page.getHtml()
