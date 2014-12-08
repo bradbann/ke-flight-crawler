@@ -28,6 +28,10 @@ public class Configuration {
 	private static String DataPath = ROOT_PATH + "/data";
 	private static List<String> UserAgents = new ArrayList<String>();
 	private static List<String[]> Proxys = new ArrayList<String[]>();
+	private static int ThreadNum = 1;
+	private static int CycleRetryTimes = 1;
+	private static int SleepTime = 6000;
+	private static int TimeOut = 5000;
 
 	/**
 	 * 初始化配置
@@ -97,12 +101,66 @@ public class Configuration {
 			if (!Files.exists(Paths.get(DataPath))) {
 				Files.createDirectories(Paths.get(DataPath));
 			}
+			/* other value */
+			Node threadNum = doc
+					.selectSingleNode("//crawler-common/thread-num");
+			if (threadNum != null && !threadNum.getText().equals("")) {
+				setThreadNum(Integer.valueOf(threadNum.getText()));
+			}
 
+			Node cycleRetryNum = doc
+					.selectSingleNode("//crawler-common/cycle-retry-times");
+			if (cycleRetryNum != null && !cycleRetryNum.getText().equals("")) {
+				setCycleRetryTimes(Integer.valueOf(cycleRetryNum.getText()));
+			}
+
+			Node sleepTime = doc
+					.selectSingleNode("//crawler-common/sleep-time");
+			if (sleepTime != null && !sleepTime.getText().equals("")) {
+				setSleepTime(Integer.valueOf(sleepTime.getText()));
+			}
+			
+			Node timeOut = doc.selectSingleNode("//crawler-common/time-out");
+			if (timeOut != null && !timeOut.getText().equals("")) {
+				setTimeOut(Integer.valueOf(timeOut.getText()));
+			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
 		} catch (Exception e) {
 			logger.warn("init config faild", e);
 		}
+	}
+
+	public static int getThreadNum() {
+		return ThreadNum;
+	}
+
+	public static void setThreadNum(int threadNum) {
+		ThreadNum = threadNum;
+	}
+
+	public static int getCycleRetryTimes() {
+		return CycleRetryTimes;
+	}
+
+	public static void setCycleRetryTimes(int cycleRetryTimes) {
+		CycleRetryTimes = cycleRetryTimes;
+	}
+
+	public static int getSleepTime() {
+		return SleepTime;
+	}
+
+	public static void setSleepTime(int sleepTime) {
+		SleepTime = sleepTime;
+	}
+
+	public static int getTimeOut() {
+		return TimeOut;
+	}
+
+	public static void setTimeOut(int timeOut) {
+		TimeOut = timeOut;
 	}
 
 }

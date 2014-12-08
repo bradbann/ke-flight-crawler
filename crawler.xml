@@ -78,5 +78,13 @@
 	<crawler-common>
 		<!-- all cache file,result report etc. default is user.dir/data -->
 		<data-path></data-path>
+		<!-- spider thread num. default is 1 -->
+		<thread-num>5</thread-num>
+		<!-- one url max queue retry num. default is 1 -->
+		<cycle-retry-times>2</cycle-retry-times>
+		<!-- in one thread max interval between two request. default is 6000ms -->
+		<sleep-time>6000</sleep-time>
+		<!-- max time before request is terminate. default is 5000ms -->
+		<time-out>5000</time-out>
 	</crawler-common>
 </root>

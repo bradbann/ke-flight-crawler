@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
+import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.utils.DateTimeUtils;
@@ -20,18 +22,21 @@ import us.codecraft.webmagic.selector.Selectable;
 public class ScheduleCtripPageProcess implements PageProcessor {
 	private Random random = new Random();
 	private String[] UserAgents;
-	private Site site = Site.me().setCycleRetryTimes(6).setSleepTime(6000)
-			.setTimeOut(10000);
+	private Site site = Site.me()
+			.setCycleRetryTimes(Configuration.getCycleRetryTimes())
+			.setSleepTime(Configuration.getSleepTime())
+			.setTimeOut(Configuration.getTimeOut());
 
 	public ScheduleCtripPageProcess(List<String[]> httpProxyList,
 			List<String> userAgents) {
-//		if (httpProxyList.size() > 0) {
-//			site.setHttpProxyPool(httpProxyList);
-//		}
+		if (httpProxyList.size() > 0) {
+			site.setHttpProxyPool(httpProxyList);
+		}
 		if (userAgents.size() > 0) {
 			site.setUserAgent(userAgents.get(0));
 			UserAgents = userAgents.toArray(new String[userAgents.size()]);
 		}
+
 	}
 
 	@Override

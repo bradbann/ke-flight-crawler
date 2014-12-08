@@ -60,7 +60,6 @@ public class ScheduleCtripSipder {
 			e.printStackTrace();
 		}
 		initFlushThread();
-
 		Session session = HibernateUtils.getSessionFactory()
 				.getCurrentSession();
 		session.beginTransaction();
@@ -92,7 +91,7 @@ public class ScheduleCtripSipder {
 		listeners.add(listener);
 		Spider flightCrawler = Spider
 				.create(processor)
-				.thread(1)
+				.thread(Configuration.getThreadNum())
 				.addRequest(urls.toArray(new Request[urls.size()]))
 				.setScheduler(
 						new FileCacheQueueScheduler(Configuration.getDataPath()))
