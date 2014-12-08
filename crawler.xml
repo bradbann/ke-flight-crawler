@@ -136,5 +136,7 @@
 		<sleep-time>6000</sleep-time>
 		<!-- max time before request is terminate. default is 5000ms -->
 		<time-out>10000</time-out>
+		<!-- use file urls.1: true 0:false  default is 0 -->
+		<use-cached-queue>1</use-cached-queue>
 	</crawler-common>
 </root>

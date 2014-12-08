@@ -16,8 +16,7 @@
 	</appender>
  
 	<root>
-		<priority value="info" />
-		<appender-ref ref="stdout" /> 
+		<priority value="info" /> 
 	</root>
 
 </log4j:configuration>

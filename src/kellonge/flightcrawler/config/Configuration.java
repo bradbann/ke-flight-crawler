@@ -32,6 +32,7 @@ public class Configuration {
 	private static int CycleRetryTimes = 1;
 	private static int SleepTime = 6000;
 	private static int TimeOut = 5000;
+	private static boolean UseCachedQueue = false;
 
 	/**
 	 * 初始化配置
@@ -119,10 +120,16 @@ public class Configuration {
 			if (sleepTime != null && !sleepTime.getText().equals("")) {
 				setSleepTime(Integer.valueOf(sleepTime.getText()));
 			}
-			
+
 			Node timeOut = doc.selectSingleNode("//crawler-common/time-out");
 			if (timeOut != null && !timeOut.getText().equals("")) {
 				setTimeOut(Integer.valueOf(timeOut.getText()));
+			}
+
+			Node useCachedQueue = doc
+					.selectSingleNode("//crawler-common/use-cached-queue");
+			if (useCachedQueue != null && !useCachedQueue.getText().equals("")) {
+				setUseCachedQueue(Integer.valueOf(useCachedQueue.getText()) == 1);
 			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
@@ -161,6 +168,14 @@ public class Configuration {
 
 	public static void setTimeOut(int timeOut) {
 		TimeOut = timeOut;
+	}
+
+	public static boolean isUseCachedQueue() {
+		return UseCachedQueue;
+	}
+
+	public static void setUseCachedQueue(boolean useCachedQueue) {
+		UseCachedQueue = useCachedQueue;
 	}
 
 }

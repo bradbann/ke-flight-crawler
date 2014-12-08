@@ -8,11 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import javassist.expr.NewArray;
 
 import javax.management.JMException;
 
@@ -21,6 +24,7 @@ import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.pipline.SingleModelSavePipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
+import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.HibernateUtils;
 
 import org.hibernate.Session;
@@ -67,7 +71,6 @@ public class ScheduleCtripSipder {
 				.list();
 		session.getTransaction().commit();
 		List<Request> urls = new ArrayList<Request>();
-
 		for (int i = 0; i < citys.size(); i++) {
 			for (int j = 0; j < citys.size(); j++) {
 				Request request = new Request(String.format(
@@ -83,6 +86,14 @@ public class ScheduleCtripSipder {
 
 				urls.add(request);
 			}
+
+			if (Configuration.isUseCachedQueue()) {
+				Request request = urls.get(0);
+				urls = new ArrayList<Request>();
+				urls.add(request);
+
+			}
+
 		}
 		PageProcessor processor = new ScheduleCtripPageProcess(
 				Configuration.getProxys(), Configuration.getUserAgents());
@@ -102,7 +113,7 @@ public class ScheduleCtripSipder {
 			SpiderMonitor.instance().register(flightCrawler);
 		} catch (JMException e) {
 			e.printStackTrace();
-		} 
+		}
 		return flightCrawler;
 	}
 
@@ -110,14 +121,17 @@ public class ScheduleCtripSipder {
 
 		@Override
 		public void onSuccess(Request request) {
-	 
-			// TODO Auto-generated method stub
+
+			System.out.println(DateTimeUtils.getNow() + "[success] url:"
+					+ request.getUrl());
 
 		}
 
 		@Override
 		public void onError(Request request) {
 			fileUrlWriter.println(request.getUrl());
+			System.out.println(DateTimeUtils.getNow() + "[error] url:"
+					+ request.getUrl());
 
 		}
 	};
