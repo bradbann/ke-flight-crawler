@@ -102,7 +102,7 @@ public class ScheduleCtripSipder {
 			SpiderMonitor.instance().register(flightCrawler);
 		} catch (JMException e) {
 			e.printStackTrace();
-		}
+		} 
 		return flightCrawler;
 	}
 
@@ -110,6 +110,7 @@ public class ScheduleCtripSipder {
 
 		@Override
 		public void onSuccess(Request request) {
+	 
 			// TODO Auto-generated method stub
 
 		}
