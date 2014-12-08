@@ -9,7 +9,7 @@
 
 		<!-- Database connection settings -->
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/flight_crawler?useUnicode=true&amp;characterEncoding=utf8</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/flight_crawler_dev?useUnicode=true&amp;characterEncoding=utf8</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">123456</property>
 
@@ -33,6 +33,8 @@
 
 		<mapping resource="kellonge/flightcrawler/model/FlightSchedule.hbm.xml" />
 		<mapping resource="kellonge/flightcrawler/model/City.hbm.xml" />
+		<mapping resource="kellonge/flightcrawler/model/FlightInfo.hbm.xml" />
+		<mapping resource="kellonge/flightcrawler/model/FlightPrice.hbm.xml" />
 
 	</session-factory>
 
