@@ -1,0 +1,8 @@
+http://pachong.org/high.html
+
+var str="";
+$(".tb tbody tr").each(function(){
+	var ip=$(this).find('td:eq(1)').text();
+	var port=$(this).find('td:eq(2)').text().replace(/.*;/g,"");
+	str+="<item ip=\""+ip+"\" port=\""+port+"\" />\n";
+})
