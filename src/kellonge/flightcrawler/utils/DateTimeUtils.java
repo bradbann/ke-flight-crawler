@@ -208,7 +208,9 @@ public final class DateTimeUtils {
 
 	/**
 	 * 将指定的时间转换成Time对象
-	 * @param time 时间字符串，格式为"hh:mm:ss"
+	 * 
+	 * @param time
+	 *            时间字符串，格式为"hh:mm:ss"
 	 * @return 返回Time对象，转换错误则返回null
 	 */
 	public static Time parseTime(String time) {
@@ -217,5 +219,25 @@ public final class DateTimeUtils {
 			return Time.valueOf(time);
 		}
 		return null;
+	}
+
+	/**
+	 * 从time2中减去time1，返回的时间小于24h
+	 * 
+	 * @param
+	 * @return 返回Time对象，错误则返回null
+	 */
+	public static Time SubstractTime(Time time1, Time time2) {
+		long interval = time2.getTime() - time1.getTime();
+		while (interval < 0) {
+			interval += 24 * 60 * 60 * 1000;
+		}
+		int day = (int) (interval / (24 * 60 * 60 * 1000));
+		int hour = (int) (interval / (60 * 60 * 1000) - day * 24);
+		int min = (int) (interval / (60 * 1000) - day * 24 * 60 - hour * 60);
+		int s = (int) (interval / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+		Time time3 = new Time(hour, min, s);
+		return time3;
+
 	}
 }

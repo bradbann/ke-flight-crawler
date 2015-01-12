@@ -30,9 +30,9 @@ public class FlightInfo {
 	private String ArrTerminal;
 	private String DeptTerminal;
 	private boolean IsStopOver;
-	private String WeekSchedule;
 	private BigDecimal LowPrice;
 	private int PriceID;
+	private int AheadDay;
 	private int Flag;
 
 	@Override
@@ -219,14 +219,6 @@ public class FlightInfo {
 		IsStopOver = isStopOver;
 	}
 
-	public String getWeekSchedule() {
-		return WeekSchedule;
-	}
-
-	public void setWeekSchedule(String weekSchedule) {
-		WeekSchedule = weekSchedule;
-	}
-
 	public Date getFlightDate() {
 		return FlightDate;
 	}
@@ -249,6 +241,14 @@ public class FlightInfo {
 
 	public void setPriceID(int priceID) {
 		PriceID = priceID;
+	}
+
+	public int getAheadDay() {
+		return AheadDay;
+	}
+
+	public void setAheadDay(int aheadDay) {
+		AheadDay = aheadDay;
 	}
 
 }

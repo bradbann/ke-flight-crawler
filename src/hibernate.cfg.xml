@@ -35,6 +35,8 @@
 		<mapping resource="kellonge/flightcrawler/model/City.hbm.xml" />
 		<mapping resource="kellonge/flightcrawler/model/FlightInfo.hbm.xml" />
 		<mapping resource="kellonge/flightcrawler/model/FlightPrice.hbm.xml" />
+		<mapping resource="kellonge/flightcrawler/model/AirLine.hbm.xml" />
+		<mapping resource="kellonge/flightcrawler/model/Airport.hbm.xml" />
 
 	</session-factory>
 
