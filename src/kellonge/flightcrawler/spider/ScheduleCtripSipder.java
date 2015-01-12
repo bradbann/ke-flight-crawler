@@ -25,8 +25,10 @@ import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.pipline.SingleModelSavePipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.DateTimeUtils;
+import kellonge.flightcrawler.utils.ErrorUrlWriter;
 import kellonge.flightcrawler.utils.HibernateUtils;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import us.codecraft.webmagic.Request;
@@ -39,31 +41,9 @@ import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 
 public class ScheduleCtripSipder {
 
-	private static String filePath = Configuration.ROOT_PATH
-			+ "/data/error.txt";
-	private static PrintWriter fileUrlWriter;
-
-	private static void initFlushThread() {
-		Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new Runnable() {
-			@Override
-			public void run() {
-				flush();
-			}
-		}, 10, 10, TimeUnit.SECONDS);
-	}
-
-	private static void flush() {
-		fileUrlWriter.flush();
-	}
+	private static Logger logger = Logger.getLogger(ScheduleCtripSipder.class);
 
 	public static Spider GetSpider() {
-
-		try {
-			fileUrlWriter = new PrintWriter(new FileWriter(filePath, true));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		initFlushThread();
 		Session session = HibernateUtils.getSessionFactory()
 				.getCurrentSession();
 		session.beginTransaction();
@@ -121,17 +101,14 @@ public class ScheduleCtripSipder {
 
 		@Override
 		public void onSuccess(Request request) {
-
-			System.out.println(DateTimeUtils.getNow() + "[success] url:"
-					+ request.getUrl());
+			logger.info("[success] url:" + request.getUrl());
 
 		}
 
 		@Override
 		public void onError(Request request) {
-			fileUrlWriter.println(request.getUrl());
-			System.out.println(DateTimeUtils.getNow() + "[error] url:"
-					+ request.getUrl());
+			ErrorUrlWriter.Print(request.getUrl());
+			logger.info("[error] url:" + request.getUrl() + "\n");
 
 		}
 	};

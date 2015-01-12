@@ -37,7 +37,7 @@ public class Configuration {
 	/**
 	 * 初始化配置
 	 */
-	public static void init() {
+	public static void init() { 
 		readConfig();
 		TimerTask timerTask = new TimerTask() {
 			@Override
