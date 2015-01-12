@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="kellonge.flightcrawler.model">
+	<class name="Airport" table="Airport">
+		<id name="ID" column="ID" />
+		<property name="Name"  type="string" /> 
+		<property name="NameEn"  type="string" /> 
+		<property name="NamePY"  type="string" /> 
+		<property name="Code"  type="string" /> 
+	</class>
+</hibernate-mapping>
