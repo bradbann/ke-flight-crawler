@@ -31,6 +31,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			List<String> userAgents) {
 		if (httpProxyList.size() > 0) {
 			site.setHttpProxyPool(httpProxyList);
+			site.getHttpProxyPool().setProxyFilePath(Configuration.ROOT_PATH+"/data/lastUse.proxy");
 		}
 		if (userAgents.size() > 0) {
 			site.setUserAgent(userAgents.get(0));
