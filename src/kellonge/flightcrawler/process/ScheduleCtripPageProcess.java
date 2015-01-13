@@ -27,11 +27,13 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			.setSleepTime(Configuration.getSleepTime())
 			.setTimeOut(Configuration.getTimeOut());
 
-	public ScheduleCtripPageProcess(List<String[]> httpProxyList,
-			List<String> userAgents) {
-		if (httpProxyList.size() > 0) {
+	public ScheduleCtripPageProcess() {
+		List<String[]> httpProxyList = Configuration.getProxys();
+		List<String> userAgents = Configuration.getUserAgents();
+		if (Configuration.isUseProxy() && httpProxyList.size() > 0) {
 			site.setHttpProxyPool(httpProxyList);
-			site.getHttpProxyPool().setProxyFilePath(Configuration.ROOT_PATH+"/data/lastUse.proxy");
+			site.getHttpProxyPool().setProxyFilePath(
+					Configuration.ROOT_PATH + "/data/lastUse.proxy");
 		}
 		if (userAgents.size() > 0) {
 			site.setUserAgent(userAgents.get(0));

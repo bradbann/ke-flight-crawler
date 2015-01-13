@@ -33,11 +33,12 @@ public class Configuration {
 	private static int SleepTime = 6000;
 	private static int TimeOut = 5000;
 	private static boolean UseCachedQueue = false;
+	private static boolean UseProxy = false;
 
 	/**
 	 * 初始化配置
 	 */
-	public static void init() { 
+	public static void init() {
 		readConfig();
 		TimerTask timerTask = new TimerTask() {
 			@Override
@@ -131,6 +132,11 @@ public class Configuration {
 			if (useCachedQueue != null && !useCachedQueue.getText().equals("")) {
 				setUseCachedQueue(Integer.valueOf(useCachedQueue.getText()) == 1);
 			}
+
+			Node useProxy = doc.selectSingleNode("//crawler-common/use-proxy");
+			if (useProxy != null && !useProxy.getText().equals("")) {
+				setUseProxy(Integer.valueOf(useProxy.getText()) == 1);
+			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
 		} catch (Exception e) {
@@ -176,6 +182,14 @@ public class Configuration {
 
 	public static void setUseCachedQueue(boolean useCachedQueue) {
 		UseCachedQueue = useCachedQueue;
+	}
+
+	public static boolean isUseProxy() {
+		return UseProxy;
+	}
+
+	public static void setUseProxy(boolean useProxy) {
+		UseProxy = useProxy;
 	}
 
 }

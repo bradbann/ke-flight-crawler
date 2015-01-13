@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="kellonge.flightcrawler.model">
-	<class name="Airport" table="Airport">
+	<class name="AirLine" table="AirLine">
 		<id name="ID" column="ID" />
 		<property name="Name"  type="string" /> 
 		<property name="NameEn"  type="string" /> 
