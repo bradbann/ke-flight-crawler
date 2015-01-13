@@ -51,35 +51,39 @@ public class ScheduleCtripSipder {
 				.list();
 		session.getTransaction().commit();
 		List<Request> urls = new ArrayList<Request>();
-		for (int i = 0; i < citys.size(); i++) {
-			for (int j = 0; j < citys.size(); j++) {
-				Request request = new Request(String.format(
-						"http://flights.ctrip.com/schedule/bjs.kmg.html", citys
-								.get(i).getCityCode1(), citys.get(j)
-								.getCityCode1()));
-				Map<String, Object> extent = new HashMap<String, Object>();
-				extent.put("DeptCity", citys.get(i));
-				extent.put("ArrCity", citys.get(j));
-				request.setExtras(extent);
-				request.putExtra("DeptCity", citys.get(i));
-				request.putExtra("ArrCity", citys.get(j));
 
-				urls.add(request);
+		if (!Configuration.isUseCachedQueue()) {
+
+			for (int i = 0; i < citys.size(); i++) {
+				for (int j = 0; j < citys.size(); j++) {
+					Request request = new Request(String.format(
+							"http://flights.ctrip.com/schedule/%s.%s.html",
+							citys.get(i).getCityCode1(), citys.get(j)
+									.getCityCode1()));
+					Map<String, Object> extent = new HashMap<String, Object>();
+					extent.put("DeptCity", citys.get(i));
+					extent.put("ArrCity", citys.get(j));
+					request.setExtras(extent);
+					request.putExtra("DeptCity", citys.get(i));
+					request.putExtra("ArrCity", citys.get(j));
+
+					urls.add(request);
+				}
 			}
 
-			if (Configuration.isUseCachedQueue()) {
-				Request request = urls.get(0);
-				urls = new ArrayList<Request>();
-				urls.add(request);
-
+			try {
+				Files.deleteIfExists(Paths.get(Configuration.getDataPath()+"/flights.ctrip.com.urls.txt"));
+				Files.deleteIfExists(Paths.get(Configuration.getDataPath()+"/flights.ctrip.com.cursor.txt"));
+			} catch (IOException e) {
+				logger.warn("delete cached urls file error  " + e.getMessage());
 			}
-
-		} 
+		}
 
 		List<SpiderListener> listeners = new ArrayList<SpiderListener>();
 		listeners.add(listener);
 		Spider flightCrawler = Spider
 				.create(new ScheduleCtripPageProcess())
+				.setUUID("flights.ctrip.com")
 				.thread(Configuration.getThreadNum())
 				.addRequest(urls.toArray(new Request[urls.size()]))
 				.setScheduler(
