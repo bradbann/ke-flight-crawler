@@ -45,7 +45,12 @@ public class FlightSchedulePipline implements Pipeline {
 					if (airLines != null && airLines.size() == 0) {
 						airLine = new AirLine();
 						airLine.setName(flightSchedule.getAirLineName());
-						session.save(airLine);
+						if (flightSchedule.getFlightNo().length() >= 2) {
+							airLine.setCode(flightSchedule.getFlightNo()
+									.substring(0, 2));
+						}
+						int airLineID = (int) session.save(airLine);
+						airLine.setID(airLineID);
 					} else {
 						airLine = airLines.get(0);
 					}
@@ -65,7 +70,8 @@ public class FlightSchedulePipline implements Pipeline {
 						deptAirport = new Airport();
 						deptAirport
 								.setName(flightSchedule.getDeptAirportName());
-						session.save(deptAirport);
+						int deptAirportID = (int) session.save(deptAirport);
+						deptAirport.setID(deptAirportID);
 					} else {
 						deptAirport = airports.get(0);
 					}
@@ -84,7 +90,8 @@ public class FlightSchedulePipline implements Pipeline {
 					if (airports != null && airports.size() == 0) {
 						arrAirport = new Airport();
 						arrAirport.setName(flightSchedule.getArrAirportName());
-						session.save(arrAirport);
+						int arrAirportID = (int) session.save(arrAirport);
+						arrAirport.setID(arrAirportID);
 					} else {
 						arrAirport = airports.get(0);
 					}
@@ -97,7 +104,6 @@ public class FlightSchedulePipline implements Pipeline {
 					session.save(flightSchedule);
 					session.getTransaction().commit();
 				}
-		 
 
 			}
 

@@ -80,7 +80,7 @@
 		<!-- all cache file,result report etc. default is user.dir/data -->
 		<data-path></data-path>
 		<!-- spider thread num. default is 1 -->
-		<thread-num>5</thread-num>
+		<thread-num>1</thread-num>
 		<!-- one url max queue retry num. default is 1 -->
 		<cycle-retry-times>2</cycle-retry-times>
 		<!-- in one thread max interval between two request. default is 6000ms -->
@@ -90,6 +90,6 @@
 		<!-- use file urls.1: true 0:false default is 0 -->
 		<use-cached-queue>0</use-cached-queue>
 		<!-- use proxy.1: true 0:false default is 0 -->
-		<use-proxy>1</use-proxy>
+		<use-proxy>0</use-proxy>
 	</crawler-common>
 </root>
