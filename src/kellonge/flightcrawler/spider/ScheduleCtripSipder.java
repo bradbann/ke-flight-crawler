@@ -57,7 +57,7 @@ public class ScheduleCtripSipder {
 			for (int i = 0; i < citys.size(); i++) {
 				for (int j = 0; j < citys.size(); j++) {
 					Request request = new Request(String.format(
-							"http://flights.ctrip.com/schedule/bjs.kmg.html",
+							"http://flights.ctrip.com/schedule/bjs.kmg.html?%s%s",
 							citys.get(i).getCityCode1(), citys.get(j)
 									.getCityCode1()));
 					Map<String, Object> extent = new HashMap<String, Object>();

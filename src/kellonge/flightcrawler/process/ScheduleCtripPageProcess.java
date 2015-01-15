@@ -122,6 +122,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			Request request = new Request(links.get());
 			request.setExtras(extent);
 			page.addTargetRequest(request);
+			 
 		}
 	}
 
