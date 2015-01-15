@@ -31,5 +31,8 @@
 		<property name="AheadDay" type="int" />
 		<property name="LowPrice" type="big_decimal" />
 		<property name="Flag" type="int" />
+		<property name="PunctualityRate" type="float" />
+		<property name="IsFood" type="boolean" />
+		<property name="AdditionalFee" type="big_decimal" />
 	</class>
 </hibernate-mapping>

@@ -3,6 +3,7 @@ package kellonge.flightcrawler.model;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 import kellonge.flightcrawler.utils.DateTimeUtils;
 
@@ -34,6 +35,15 @@ public class FlightInfo {
 	private int PriceID;
 	private int AheadDay;
 	private int Flag;
+	private String AirLineCode;
+	private String ArrCityCode;
+	private String DeptCityCode;
+	private String ArrAirportCode;
+	private String DeptAirportCode;
+	private float PunctualityRate;
+	private boolean IsFood;
+	private BigDecimal AdditionalFee;
+	private List<FlightPrice> FlightPrices;
 
 	@Override
 	public String toString() {
@@ -249,6 +259,78 @@ public class FlightInfo {
 
 	public void setAheadDay(int aheadDay) {
 		AheadDay = aheadDay;
+	}
+
+	public String getAirLineCode() {
+		return AirLineCode;
+	}
+
+	public void setAirLineCode(String airLineCode) {
+		AirLineCode = airLineCode;
+	}
+
+	public float getPunctualityRate() {
+		return PunctualityRate;
+	}
+
+	public void setPunctualityRate(float punctualityRate) {
+		PunctualityRate = punctualityRate;
+	}
+
+	public boolean isIsFood() {
+		return IsFood;
+	}
+
+	public void setIsFood(boolean isFood) {
+		IsFood = isFood;
+	}
+
+	public BigDecimal getAdditionalFee() {
+		return AdditionalFee;
+	}
+
+	public void setAdditionalFee(BigDecimal additionalFee) {
+		AdditionalFee = additionalFee;
+	}
+
+	public List<FlightPrice> getFlightPrices() {
+		return FlightPrices;
+	}
+
+	public void setFlightPrices(List<FlightPrice> flightPrices) {
+		FlightPrices = flightPrices;
+	}
+
+	public String getDeptCityCode() {
+		return DeptCityCode;
+	}
+
+	public void setDeptCityCode(String deptCityCode) {
+		DeptCityCode = deptCityCode;
+	}
+
+	public String getArrCityCode() {
+		return ArrCityCode;
+	}
+
+	public void setArrCityCode(String arrCityCode) {
+		ArrCityCode = arrCityCode;
+	}
+
+	public String getDeptAirportCode() {
+		return DeptAirportCode;
+	}
+
+	public void setDeptAirportCode(String deptAirportCode) {
+		DeptAirportCode = deptAirportCode;
+	}
+
+	public String getArrAirportCode() {
+		return ArrAirportCode;
+	}
+
+	public void setArrAirportCode(String arrAirportCode) {
+		ArrAirportCode = arrAirportCode;
 	}
 
 }

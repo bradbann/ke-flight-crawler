@@ -20,7 +20,7 @@ import us.codecraft.webmagic.pipeline.Pipeline;
  * @param <T>
  *            实体类型
  */
-public class FlightSchedulePipline implements Pipeline {
+public class ScheduleCtripPipline implements Pipeline {
 
 	@Override
 	public void process(ResultItems resultItems, Task task) {

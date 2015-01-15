@@ -22,7 +22,7 @@ import javax.management.JMException;
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
-import kellonge.flightcrawler.pipline.FlightSchedulePipline;
+import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
@@ -88,7 +88,7 @@ public class ScheduleCtripSipder {
 				.addRequest(urls.toArray(new Request[urls.size()]))
 				.setScheduler(
 						new FileCacheQueueScheduler(Configuration.getDataPath()))
-				.addPipeline(new FlightSchedulePipline())
+				.addPipeline(new ScheduleCtripPipline())
 				.setSpiderListeners(listeners)
 				.addPipeline(new ConsolePipeline());
 		try {

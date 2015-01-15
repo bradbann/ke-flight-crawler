@@ -12,7 +12,7 @@ import javax.management.JMException;
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.extension.MultiRequestSpider;
 import kellonge.flightcrawler.model.City;
-import kellonge.flightcrawler.pipline.FlightSchedulePipline; 
+import kellonge.flightcrawler.pipline.ScheduleCtripPipline; 
 import kellonge.flightcrawler.process.PriceCtripProcess;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
