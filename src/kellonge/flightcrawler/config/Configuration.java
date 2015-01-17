@@ -26,6 +26,7 @@ public class Configuration {
 
 	/* config value */
 	private static String DataPath = ROOT_PATH + "/data";
+	private static String HibernateConfig = ROOT_PATH + "/hibernate.cfg.xml";
 	private static List<String> UserAgents = new ArrayList<String>();
 	private static List<String[]> Proxys = new ArrayList<String[]>();
 	private static int ThreadNum = 1;
@@ -190,6 +191,14 @@ public class Configuration {
 
 	public static void setUseProxy(boolean useProxy) {
 		UseProxy = useProxy;
+	}
+
+	public static String getHibernateConfig() {
+		return HibernateConfig;
+	}
+
+	public static void setHibernateConfig(String hibernateConfig) {
+		HibernateConfig = hibernateConfig;
 	}
 
 }
