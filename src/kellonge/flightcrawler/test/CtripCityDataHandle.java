@@ -5,8 +5,7 @@ import java.util.regex.Pattern;
 
 import org.hibernate.Session;
 
-import kellonge.flightcrawler.model.City;
-import kellonge.flightcrawler.utils.HibernateUtils;
+import kellonge.flightcrawler.model.City; 
 
 public class CtripCityDataHandle {
 	public static void main(String[] args) {
@@ -18,8 +17,7 @@ public class CtripCityDataHandle {
 			String citysString = matcher.group();
 			String[] citySpilt = citysString.split("\\|"); 
 			if (citySpilt.length > 4) {
-				Session session = HibernateUtils.getSessionFactory()
-						.getCurrentSession();
+				Session session = null;
 				session.beginTransaction();
 				
 				City city =new City();

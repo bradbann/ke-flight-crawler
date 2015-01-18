@@ -15,8 +15,7 @@ import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.pipline.ScheduleCtripPipline; 
 import kellonge.flightcrawler.process.PriceCtripProcess;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
-import kellonge.flightcrawler.utils.ErrorUrlWriter;
-import kellonge.flightcrawler.utils.HibernateUtils;
+import kellonge.flightcrawler.utils.ErrorUrlWriter; 
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;

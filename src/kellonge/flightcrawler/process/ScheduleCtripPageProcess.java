@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
@@ -45,8 +47,17 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 	@Override
 	public void process(Page page) {
 		site.setUserAgent(UserAgents[random.nextInt(UserAgents.length)]);
-		City deptCity = (City) page.getRequest().getExtra("DeptCity");
-		City arrCity = (City) page.getRequest().getExtra("ArrCity");
+		String arrCityName = "", deptCityName = "";
+		String cityInfo = page.getHtml()
+				.xpath("//h4[@class='result_type']/text()").get();
+		if (StringUtils.isNotEmpty(cityInfo)) {
+			String[] cityNames = cityInfo.split("到");
+			if (cityNames.length == 2) {
+				arrCityName = cityNames[1];
+				deptCityName = cityNames[0];
+			}
+		}
+
 		List<Selectable> scheduleList = page.getHtml()
 				.$(".result_m_content tr").nodes();
 		List<FlightSchedule> flightList = new ArrayList<FlightSchedule>();
@@ -54,15 +65,9 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			FlightSchedule flight = new FlightSchedule();
 			flight.setFlag(1);
 			flight.setDataSource("CTRIP");
+			flight.setDeptCityName(deptCityName);
+			flight.setArrCityName(arrCityName);
 			flight.setExpiredDate(DateTimeUtils.addDay(new Date(), 7));
-			if (deptCity != null) {
-				flight.setDeptCityID(deptCity.getID());
-				flight.setDeptCityName(deptCity.getCityName());
-			}
-			if (arrCity != null) {
-				flight.setArrCityID(arrCity.getID());
-				flight.setArrCityName(arrCity.getCityName());
-			}
 			flight.setAirLineName(schedule.xpath(
 					"//*[@class='flight_logo']/a/strong/@data-description")
 					.get());
@@ -114,15 +119,11 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			page.putField("ModelData", flightList);
 		}
 		// 分页
-		Map<String, Object> extent = new HashMap<String, Object>();
-		extent.put("DeptCity", deptCity);
-		extent.put("ArrCity", arrCity);
 		for (Selectable links : page.getHtml()
 				.$(".schedule_page_list a:not(.current)").links().nodes()) {
 			Request request = new Request(links.get());
-			request.setExtras(extent);
 			page.addTargetRequest(request);
-			 
+
 		}
 	}
 

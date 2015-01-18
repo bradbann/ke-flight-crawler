@@ -3,8 +3,7 @@ package kellonge.flightcrawler.test;
 import java.math.BigDecimal;
 
 import kellonge.flightcrawler.model.FlightPrice;
-import kellonge.flightcrawler.utils.DataAccessObject;
-import kellonge.flightcrawler.utils.HibernateUtils;
+import kellonge.flightcrawler.utils.DataAccessObject; 
 
 import org.hibernate.Session;
 

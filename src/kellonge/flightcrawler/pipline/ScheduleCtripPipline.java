@@ -9,8 +9,11 @@ import kellonge.flightcrawler.model.AirLine;
 import kellonge.flightcrawler.model.Airport;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
-import kellonge.flightcrawler.utils.DateTimeUtils;
-import kellonge.flightcrawler.utils.HibernateUtils;
+import kellonge.flightcrawler.model.manager.AirLineManager;
+import kellonge.flightcrawler.model.manager.AirportManager;
+import kellonge.flightcrawler.model.manager.CityManager;
+import kellonge.flightcrawler.model.manager.FlightScheduleManager;
+import kellonge.flightcrawler.utils.DateTimeUtils; 
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
@@ -32,77 +35,58 @@ public class ScheduleCtripPipline implements Pipeline {
 					flightSchedule.setFlightInterval(DateTimeUtils
 							.SubstractTime(flightSchedule.getDeptTime(),
 									flightSchedule.getArrTime()));
+					// city
+					City deptCity = new CityManager()
+							.getCityByName(flightSchedule.getDeptCityName());
+					City arrCity = new CityManager()
+							.getCityByName(flightSchedule.getArrCityName());
+					if (deptCity != null) {
+						flightSchedule.setDeptCityID(deptCity.getID());
+					}
+					if (arrCity != null) {
+						flightSchedule.setArrCityID(arrCity.getID());
+					}
 
 					// save airline
-					Session session = HibernateUtils.getSessionFactory()
-							.getCurrentSession();
-					session.beginTransaction();
-					Query query = session
-							.createQuery(" select a from AirLine  a where  a.Name = :Name");
-					query.setString("Name", flightSchedule.getAirLineName());
-					List<AirLine> airLines = (List<AirLine>) query.list();
-					AirLine airLine = null;
-					if (airLines != null && airLines.size() == 0) {
+
+					AirLine airLine = new AirLineManager()
+							.getAirLineByName(flightSchedule.getAirLineName());
+					if (airLine == null) {
 						airLine = new AirLine();
 						airLine.setName(flightSchedule.getAirLineName());
 						if (flightSchedule.getFlightNo().length() >= 2) {
 							airLine.setCode(flightSchedule.getFlightNo()
 									.substring(0, 2));
 						}
-						int airLineID = (int) session.save(airLine);
-						airLine.setID(airLineID);
-					} else {
-						airLine = airLines.get(0);
+						new AirLineManager().saveAirLine(airLine);
 					}
 					flightSchedule.setAirLineID(airLine.getID());
-					session.getTransaction().commit();
 
 					// save dept airport
-					session = HibernateUtils.getSessionFactory()
-							.getCurrentSession();
-					session.beginTransaction();
-					query = session
-							.createQuery(" select a  from Airport  a where  a.Name = :Name");
-					query.setString("Name", flightSchedule.getDeptAirportName());
-					List<Airport> airports = (List<Airport>) query.list();
-					Airport deptAirport = null;
-					if (airports != null && airports.size() == 0) {
+					Airport deptAirport = new AirportManager()
+							.getAirportByName(flightSchedule
+									.getDeptAirportName());
+					if (deptAirport == null) {
 						deptAirport = new Airport();
 						deptAirport
 								.setName(flightSchedule.getDeptAirportName());
-						int deptAirportID = (int) session.save(deptAirport);
-						deptAirport.setID(deptAirportID);
-					} else {
-						deptAirport = airports.get(0);
+						new AirportManager().saveAirport(deptAirport);
 					}
 					flightSchedule.setDeptAirportID(deptAirport.getID());
-					session.getTransaction().commit();
 
 					// save arr airport
-					session = HibernateUtils.getSessionFactory()
-							.getCurrentSession();
-					session.beginTransaction();
-					query = session
-							.createQuery("  select a from Airport  a where  a.Name = :Name");
-					query.setString("Name", flightSchedule.getArrAirportName());
-					airports = (List<Airport>) query.list();
-					Airport arrAirport = null;
-					if (airports != null && airports.size() == 0) {
+					Airport arrAirport = new AirportManager()
+							.getAirportByName(flightSchedule
+									.getArrAirportName());
+					if (arrAirport == null) {
 						arrAirport = new Airport();
 						arrAirport.setName(flightSchedule.getArrAirportName());
-						int arrAirportID = (int) session.save(arrAirport);
-						arrAirport.setID(arrAirportID);
-					} else {
-						arrAirport = airports.get(0);
+						new AirportManager().saveAirport(arrAirport);
 					}
 					flightSchedule.setArrAirportID(arrAirport.getID());
-					session.getTransaction().commit();
 
-					session = HibernateUtils.getSessionFactory()
-							.getCurrentSession();
-					session.beginTransaction();
-					session.save(flightSchedule);
-					session.getTransaction().commit();
+					new FlightScheduleManager()
+							.saveFlightSchedule(flightSchedule);
 				}
 
 			}

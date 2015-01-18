@@ -22,11 +22,12 @@ import javax.management.JMException;
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
+import kellonge.flightcrawler.model.manager.CityManager;
 import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
-import kellonge.flightcrawler.utils.HibernateUtils;
+ 
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -44,36 +45,27 @@ public class ScheduleCtripSipder {
 	private static Logger logger = Logger.getLogger(ScheduleCtripSipder.class);
 
 	public static Spider GetSpider() {
-		Session session = HibernateUtils.getSessionFactory()
-				.getCurrentSession();
-		session.beginTransaction();
-		List<City> citys = (List<City>) session.createQuery(" from City")
-				.list();
-		session.getTransaction().commit();
+		List<City> citys = new CityManager().getCitys();
 		List<Request> urls = new ArrayList<Request>();
 
 		if (!Configuration.isUseCachedQueue()) {
 
 			for (int i = 0; i < citys.size(); i++) {
 				for (int j = 0; j < citys.size(); j++) {
-					Request request = new Request(String.format(
-							"http://flights.ctrip.com/schedule/bjs.kmg.html?%s%s",
-							citys.get(i).getCityCode1(), citys.get(j)
-									.getCityCode1()));
-					Map<String, Object> extent = new HashMap<String, Object>();
-					extent.put("DeptCity", citys.get(i));
-					extent.put("ArrCity", citys.get(j));
-					request.setExtras(extent);
-					request.putExtra("DeptCity", citys.get(i));
-					request.putExtra("ArrCity", citys.get(j));
-
+					Request request = new Request(
+							String.format(
+									"http://flights.ctrip.com/schedule/%s.%s.html",
+									citys.get(i).getCityCode1(), citys.get(j)
+											.getCityCode1()));
 					urls.add(request);
 				}
 			}
 
 			try {
-				Files.deleteIfExists(Paths.get(Configuration.getDataPath()+"/flights.ctrip.com.urls.txt"));
-				Files.deleteIfExists(Paths.get(Configuration.getDataPath()+"/flights.ctrip.com.cursor.txt"));
+				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
+						+ "/flights.ctrip.com.urls.txt"));
+				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
+						+ "/flights.ctrip.com.cursor.txt"));
 			} catch (IOException e) {
 				logger.warn("delete cached urls file error  " + e.getMessage());
 			}

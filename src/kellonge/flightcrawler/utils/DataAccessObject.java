@@ -1,6 +1,7 @@
 package kellonge.flightcrawler.utils;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -18,12 +19,34 @@ public class DataAccessObject {
 	public void saveOrUpdate(Object object) {
 		Transaction transaction = openSession().beginTransaction();
 		try {
-			openSession().saveOrUpdate(object);
+			openSession().saveOrUpdate(object);			
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();
 		}
 		closeSession();
+	}
+
+	public void remove(Class classType, Object objID) {
+		Transaction transaction = openSession().beginTransaction();
+		try {
+			if (Utility.isInteger(objID))
+				openSession().delete(
+						openSession().get(classType,
+								Integer.valueOf(Utility.toSafeInt(objID))));
+			else
+				openSession().delete(
+						openSession().get(classType, (Serializable) objID));
+			transaction.commit();
+		} catch (Exception e) {
+			transaction.rollback();
+		} finally {
+			closeSession();
+		}
+	}
+
+	public void remove(Session session, Class classType, Object objID) {
+		session.delete(session.get(classType, (Serializable) objID));
 	}
 
 	public static Session openSession() throws HibernateException {
@@ -47,10 +70,12 @@ public class DataAccessObject {
 
 	public static void rebuildSessionFactory() {
 		try {
-			if (configuration==null) {
-				configuration=new Configuration();
+			if (configuration == null) {
+				configuration = new Configuration();
 			}
-			configuration .configure(new File(kellonge.flightcrawler.config.Configuration.getHibernateConfig()));
+			configuration.configure(new File(
+					kellonge.flightcrawler.config.Configuration
+							.getHibernateConfig()));
 			StandardServiceRegistryBuilder sb = new StandardServiceRegistryBuilder();
 			sb.applySettings(configuration.getProperties());
 			StandardServiceRegistry standardServiceRegistry = sb.build();
