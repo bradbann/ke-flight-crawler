@@ -44,6 +44,7 @@ public class FlightInfo {
 	private boolean IsFood;
 	private BigDecimal AdditionalFee;
 	private List<FlightPrice> FlightPrices;
+	private int FlightScheduleID;
 
 	@Override
 	public String toString() {
@@ -331,6 +332,14 @@ public class FlightInfo {
 
 	public void setArrAirportCode(String arrAirportCode) {
 		ArrAirportCode = arrAirportCode;
+	}
+
+	public int getFlightScheduleID() {
+		return FlightScheduleID;
+	}
+
+	public void setFlightScheduleID(int flightScheduleID) {
+		FlightScheduleID = flightScheduleID;
 	}
 
 }

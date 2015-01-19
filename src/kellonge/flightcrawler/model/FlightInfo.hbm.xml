@@ -5,28 +5,10 @@
 
 <hibernate-mapping package="kellonge.flightcrawler.model">
 	<class name="FlightInfo" table="FlightInfo">
-		<id name="ID" column="ID" />
-		<property name="AirLineName"  type="string" />
-		<property name="AirLineID" type="int" />
-		<property name="DeptAirportName" type="string" />
-		<property name="DeptAirportID" type="int" />
-		<property name="DeptTime" type="time" />
-		<property name="DeptCityName" type="string" />
-		<property name="DeptCityID" type="int" />
-		<property name="ArrAirportName" type="string" />
-		<property name="ArrAirportID" type="int" />
-		<property name="ArrTime" type="time" />
-		<property name="ArrCityID" type="int" />
-		<property name="ArrCityName" type="string" />
-		<property name="FlightInterval" type="time" />
-		<property name="FlightNo" type="string" />
-		<property name="PlanModel" type="string" />
+		<id name="ID" column="ID" />		
 		<property name="CreateDate" type="date" />
 		<property name="FlightDate" type="date" />
 		<property name="DataSource" type="string" />
-		<property name="ArrTerminal" type="string" />
-		<property name="DeptTerminal" type="string" />
-		<property name="IsStopOver" type="boolean" />
 		<property name="PriceID" type="int" />
 		<property name="AheadDay" type="int" />
 		<property name="LowPrice" type="big_decimal" />
@@ -34,5 +16,6 @@
 		<property name="PunctualityRate" type="float" />
 		<property name="IsFood" type="boolean" />
 		<property name="AdditionalFee" type="big_decimal" />
+		<property name="FlightScheduleID" type="int" />		
 	</class>
 </hibernate-mapping>

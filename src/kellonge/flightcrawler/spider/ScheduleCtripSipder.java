@@ -54,7 +54,7 @@ public class ScheduleCtripSipder {
 				for (int j = 0; j < citys.size(); j++) {
 					Request request = new Request(
 							String.format(
-									"http://flights.ctrip.com/schedule/%s.%s.html",
+									"http://flights.ctrip.com/schedule/kmg.sha.html?%s%s",
 									citys.get(i).getCityCode1(), citys.get(j)
 											.getCityCode1()));
 					urls.add(request);
@@ -87,7 +87,7 @@ public class ScheduleCtripSipder {
 			SpiderMonitor.instance().register(flightCrawler);
 		} catch (JMException e) {
 			e.printStackTrace();
-		}
+		}		
 		return flightCrawler;
 	}
 

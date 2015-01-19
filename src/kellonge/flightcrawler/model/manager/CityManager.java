@@ -18,7 +18,7 @@ public class CityManager {
 	DataAccessObject dao = new DataAccessObject();
 	Logger logger = Logger.getLogger(this.getClass());
 
-	private List<City> cities = null;
+	private static List<City> cities = null;
 
 	public CityManager() {
 	}
@@ -46,23 +46,19 @@ public class CityManager {
 	}
 
 	public List<City> getCitys() {
-		if (cities != null) {
-			return cities;
-		}
-		List<City> citys = new ArrayList<City>();
-		try {
-			Query query = getCitysQuery("c");
-			citys = query.list();
-			for (City city : citys) {
-				extendCity(city);
+		if (cities == null) {
+			try {
+				Query query = getCitysQuery("c");
+				cities = query.list();
+				for (City city : cities) {
+					extendCity(city);
+				}
+			} catch (Exception e) {
+				logger.info("getCitys" + e.getMessage());
+			} finally {
+				DataAccessObject.closeSession();
 			}
-			cities = citys;
-		} catch (Exception e) {
-			logger.info("getCitys" + e.getMessage());
-		} finally {
-			DataAccessObject.closeSession();
 		}
-
 		return cities;
 	}
 

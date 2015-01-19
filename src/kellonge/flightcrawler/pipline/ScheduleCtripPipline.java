@@ -2,9 +2,6 @@ package kellonge.flightcrawler.pipline;
 
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-
 import kellonge.flightcrawler.model.AirLine;
 import kellonge.flightcrawler.model.Airport;
 import kellonge.flightcrawler.model.City;
@@ -13,7 +10,8 @@ import kellonge.flightcrawler.model.manager.AirLineManager;
 import kellonge.flightcrawler.model.manager.AirportManager;
 import kellonge.flightcrawler.model.manager.CityManager;
 import kellonge.flightcrawler.model.manager.FlightScheduleManager;
-import kellonge.flightcrawler.utils.DateTimeUtils; 
+import kellonge.flightcrawler.utils.DateTimeUtils;
+import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
@@ -28,13 +26,20 @@ public class ScheduleCtripPipline implements Pipeline {
 	@Override
 	public void process(ResultItems resultItems, Task task) {
 		try {
+
 			List<FlightSchedule> modelData = (List<FlightSchedule>) resultItems
 					.get("ModelData");
+			Request request = (Request) resultItems.get("Request");
 			if (modelData != null) {
 				for (FlightSchedule flightSchedule : modelData) {
 					flightSchedule.setFlightInterval(DateTimeUtils
 							.SubstractTime(flightSchedule.getDeptTime(),
 									flightSchedule.getArrTime()));
+					if (request != null) {
+
+						flightSchedule.setRequestParam(String.format("url:%s",
+								request.getUrl()));
+					}
 					// city
 					City deptCity = new CityManager()
 							.getCityByName(flightSchedule.getDeptCityName());
@@ -70,6 +75,7 @@ public class ScheduleCtripPipline implements Pipeline {
 						deptAirport = new Airport();
 						deptAirport
 								.setName(flightSchedule.getDeptAirportName());
+						deptAirport.setCityID(deptCity.getID());
 						new AirportManager().saveAirport(deptAirport);
 					}
 					flightSchedule.setDeptAirportID(deptAirport.getID());
@@ -81,6 +87,7 @@ public class ScheduleCtripPipline implements Pipeline {
 					if (arrAirport == null) {
 						arrAirport = new Airport();
 						arrAirport.setName(flightSchedule.getArrAirportName());
+						arrAirport.setCityID(arrCity.getID());
 						new AirportManager().saveAirport(arrAirport);
 					}
 					flightSchedule.setArrAirportID(arrAirport.getID());

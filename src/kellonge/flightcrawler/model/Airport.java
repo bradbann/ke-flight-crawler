@@ -1,17 +1,18 @@
 package kellonge.flightcrawler.model;
 
 public class Airport {
-	private int ID;
+	private String ID;
 	private String Name;
 	private String NameEn;
 	private String NamePY;
 	private String Code;
+	private int CityID;
 
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public void setID(int iD) {
+	public void setID(String iD) {
 		ID = iD;
 	}
 
@@ -45,5 +46,13 @@ public class Airport {
 
 	public void setCode(String code) {
 		Code = code;
+	}
+
+	public int getCityID() {
+		return CityID;
+	}
+
+	public void setCityID(int cityID) {
+		CityID = cityID;
 	}
 }

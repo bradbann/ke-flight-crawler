@@ -5,10 +5,13 @@
 
 <hibernate-mapping package="kellonge.flightcrawler.model">
 	<class name="Airport" table="Airport">
-		<id name="ID" column="ID" />
+	       <id name="ID" column="ID" type="string">
+            <generator class="uuid.hex"/>
+        </id> 
 		<property name="Name"  type="string" /> 
 		<property name="NameEn"  type="string" /> 
 		<property name="NamePY"  type="string" /> 
 		<property name="Code"  type="string" /> 
+		<property name="CityID"  type="int" /> 
 	</class>
 </hibernate-mapping>

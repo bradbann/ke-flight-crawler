@@ -18,14 +18,15 @@ public class AirLineManager {
 	DataAccessObject dao = new DataAccessObject();
 	Logger logger = Logger.getLogger(this.getClass());
 
-	private List<AirLine> airLines = null;
+	private static List<AirLine> airLines = null;
 
 	public AirLineManager() {
 	}
 
-	public void saveAirLine(AirLine airLine) { 
-		try { 
-			dao.saveOrUpdate(airLine);
+	public void saveAirLine(AirLine airLine) {
+		try {
+			dao.saveOrUpdate(airLine); 
+			airLines = null;
 		} catch (Exception err) {
 			logger.info("savrAirLine" + err.getMessage());
 		} finally {
@@ -44,21 +45,18 @@ public class AirLineManager {
 	}
 
 	public List<AirLine> getAirLines() {
-		if (airLines != null) {
-			return airLines;
-		}
-		List<AirLine> airLines = new ArrayList<AirLine>();
-		try {
-			Query query = getAirLinesQuery("a");
-			airLines = query.list();
-			for (AirLine airLine : airLines) {
-				extendAirLine(airLine);
+		if (airLines == null) {
+			try {
+				Query query = getAirLinesQuery("a");
+				airLines = query.list();
+				for (AirLine airLine : airLines) {
+					extendAirLine(airLine);
+				}
+			} catch (Exception e) {
+				logger.info("getAirLines" + e.getMessage());
+			} finally {
+				DataAccessObject.closeSession();
 			}
-			airLines = airLines;
-		} catch (Exception e) {
-			logger.info("getAirLines" + e.getMessage());
-		} finally {
-			DataAccessObject.closeSession();
 		}
 
 		return airLines;

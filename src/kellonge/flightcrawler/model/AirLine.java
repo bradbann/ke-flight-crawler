@@ -1,17 +1,17 @@
 package kellonge.flightcrawler.model;
 
 public class AirLine {
-	private int ID;
+	private String ID;
 	private String Name;
 	private String NameEn;
 	private String NamePY;
 	private String Code;
 
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public void setID(int iD) {
+	public void setID(String iD) {
 		ID = iD;
 	}
 

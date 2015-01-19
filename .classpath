@@ -38,5 +38,6 @@
 	<classpathentry kind="lib" path="lib/webmagic-core.jar"/>
 	<classpathentry kind="lib" path="lib/webmagic-extension.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

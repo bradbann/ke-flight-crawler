@@ -1,22 +1,26 @@
 package kellonge.flightcrawler.model;
 
-import java.sql.Time; 
+import java.sql.Time;
 import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.mysql.jdbc.TimeUtil;
 
 import kellonge.flightcrawler.utils.DateTimeUtils;
 
 public class FlightSchedule {
 
-	private int ID;
+	private String ID;
 	private String AirLineName;
-	private int AirLineID;
+	private String AirLineID;
 	private String DeptAirportName;
-	private int DeptAirportID;
+	private String DeptAirportID;
 	private Time DeptTime;
 	private String DeptCityName;
 	private int DeptCityID;
 	private String ArrAirportName;
-	private int ArrAirportID;
+	private String ArrAirportID;
 	private Time ArrTime;
 	private int ArrCityID;
 	private String ArrCityName;
@@ -24,26 +28,29 @@ public class FlightSchedule {
 	private String FlightNo;
 	private String PlanModel;
 	private Date CreateDate;
+	private Date LastUpdate;
 	private Date ExpiredDate;
 	private String DataSource;
 	private String ArrTerminal;
 	private String DeptTerminal;
 	private boolean IsStopOver;
-	private String WeekSchedule;	
+	private String WeekSchedule;
 	private int Flag;
+	private String RequestParam;
 
 	@Override
 	public String toString() {
-		return String.format("%s(%s)  %s(%s)--%s(%s)", FlightNo, getAirLineName(),
-				DeptAirportName, DateTimeUtils.format(DeptTime), ArrAirportName,
+		return String.format("%s(%s)  %s(%s)--%s(%s)", FlightNo,
+				getAirLineName(), DeptAirportName,
+				DateTimeUtils.format(DeptTime), ArrAirportName,
 				DateTimeUtils.format(ArrTime));
 	}
 
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public void setID(int iD) {
+	public void setID(String iD) {
 		ID = iD;
 	}
 
@@ -55,11 +62,11 @@ public class FlightSchedule {
 		AirLineName = airLineName;
 	}
 
-	public int getAirLineID() {
+	public String getAirLineID() {
 		return AirLineID;
 	}
 
-	public void setAirLineID(int airLineID) {
+	public void setAirLineID(String airLineID) {
 		AirLineID = airLineID;
 	}
 
@@ -71,11 +78,11 @@ public class FlightSchedule {
 		DeptAirportName = deptAirportName;
 	}
 
-	public int getDeptAirportID() {
+	public String getDeptAirportID() {
 		return DeptAirportID;
 	}
 
-	public void setDeptAirportID(int deptAirportID) {
+	public void setDeptAirportID(String deptAirportID) {
 		DeptAirportID = deptAirportID;
 	}
 
@@ -111,11 +118,11 @@ public class FlightSchedule {
 		ArrAirportName = arrAirportName;
 	}
 
-	public int getArrAirportID() {
+	public String getArrAirportID() {
 		return ArrAirportID;
 	}
 
-	public void setArrAirportID(int arrAirportID) {
+	public void setArrAirportID(String arrAirportID) {
 		ArrAirportID = arrAirportID;
 	}
 
@@ -230,6 +237,71 @@ public class FlightSchedule {
 	public void setWeekSchedule(String weekSchedule) {
 		WeekSchedule = weekSchedule;
 	}
- 
+
+	public Date getLastUpdate() {
+		return LastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		LastUpdate = lastUpdate;
+	}
+
+	public String getRequestParam() {
+		return RequestParam;
+	}
+
+	public void setRequestParam(String requestParam) {
+		RequestParam = requestParam;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		FlightSchedule o = (FlightSchedule) obj;
+		if (AirLineID != o.AirLineID) {
+			return false;
+		}
+		if (DeptAirportID != o.DeptAirportID) {
+			return false;
+		}
+		if (ArrAirportID != o.ArrAirportID) {
+			return false;
+		}
+		if (DeptCityID != o.DeptCityID) {
+			return false;
+		}
+		if (ArrCityID != o.ArrCityID) {
+			return false;
+		}
+
+		if (!StringUtils.equals(FlightNo, o.FlightNo)) {
+			return false;
+		}
+		if (!StringUtils.equals(PlanModel, o.PlanModel)) {
+			return false;
+		}
+
+		if (!DeptTime.equals(o.DeptTime)) {
+			return false;
+		}
+		if (!ArrTime.equals(o.ArrTime)) {
+			return false;
+		}
+
+		if (!StringUtils.equals(DeptTerminal, o.DeptTerminal)) {
+			return false;
+		}
+
+		if (!StringUtils.equals(ArrTerminal, o.ArrTerminal)) {
+			return false;
+		}
+		if (IsStopOver != o.IsStopOver) {
+			return false;
+		}
+
+		if (!StringUtils.equals(WeekSchedule, o.WeekSchedule)) {
+			return false;
+		}
+		return true;
+	}
 
 }

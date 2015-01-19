@@ -18,14 +18,15 @@ public class AirportManager {
 	DataAccessObject dao = new DataAccessObject();
 	Logger logger = Logger.getLogger(this.getClass());
 
-	private List<Airport> airports = null;
+	private static List<Airport> airports = null;
 
 	public AirportManager() {
 	}
 
-	public void saveAirport(Airport airport) { 
-		try { 
+	public void saveAirport(Airport airport) {
+		try {
 			dao.saveOrUpdate(airport);
+			airports = null;
 		} catch (Exception err) {
 			logger.info("savrAirport" + err.getMessage());
 		} finally {
@@ -44,22 +45,19 @@ public class AirportManager {
 	}
 
 	public List<Airport> getAirports() {
-		if (airports != null) {
-			return airports;
-		}
-		List<Airport> airports = new ArrayList<Airport>();
-		try {
-			Query query = getAirportsQuery("a");
-			airports = query.list();
-			for (Airport airport : airports) {
-				extendAirport(airport);
+		if (airports == null) { 
+			try {
+				Query query = getAirportsQuery("a");
+				airports = query.list();
+				for (Airport airport : airports) {
+					extendAirport(airport);
+				} 
+			} catch (Exception e) {
+				logger.info("getAirports" + e.getMessage());
+			} finally {
+				DataAccessObject.closeSession();
 			}
-			airports = airports;
-		} catch (Exception e) {
-			logger.info("getAirports" + e.getMessage());
-		} finally {
-			DataAccessObject.closeSession();
-		}
+		} 
 
 		return airports;
 	}
