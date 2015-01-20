@@ -94,6 +94,7 @@ public class ScheduleCtripPipline implements Pipeline {
 
 					new FlightScheduleManager()
 							.saveFlightSchedule(flightSchedule);
+
 				}
 
 			}

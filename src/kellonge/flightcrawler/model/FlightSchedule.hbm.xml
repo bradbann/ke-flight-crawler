@@ -23,9 +23,9 @@
 		<property name="FlightInterval" type="time" />
 		<property name="FlightNo" type="string" />
 		<property name="PlanModel" type="string" />
-		<property name="CreateDate" type="date" />
-		<property name="LastUpdate" type="date" />
-		<property name="ExpiredDate" type="date" />
+		<property name="CreateDate" type="timestamp" />
+		<property name="LastUpdate" type="timestamp" />
+		<property name="ExpiredDate" type="timestamp" />
 		<property name="DataSource" type="string" />
 		<property name="ArrTerminal" type="string" />
 		<property name="DeptTerminal" type="string" />

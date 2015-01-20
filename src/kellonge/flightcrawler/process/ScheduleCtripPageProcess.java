@@ -29,7 +29,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			.setSleepTime(Configuration.getSleepTime())
 			.setTimeOut(Configuration.getTimeOut());
 
-	public ScheduleCtripPageProcess() {
+	public ScheduleCtripPageProcess() {		
 		List<String[]> httpProxyList = Configuration.getProxys();
 		List<String> userAgents = Configuration.getUserAgents();
 		if (Configuration.isUseProxy() && httpProxyList.size() > 0) {
@@ -46,6 +46,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 
 	@Override
 	public void process(Page page) {
+	
 		site.setUserAgent(UserAgents[random.nextInt(UserAgents.length)]);
 		String arrCityName = "", deptCityName = "";
 		String cityInfo = page.getHtml()
@@ -117,7 +118,7 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			page.setSkip(true);
 		} else {
 			page.putField("ModelData", flightList);
-			page.putField("Request", page.getRequest());
+			page.putField("Request", page.getRequest());		
 		}
 		// 分页
 		for (Selectable links : page.getHtml()

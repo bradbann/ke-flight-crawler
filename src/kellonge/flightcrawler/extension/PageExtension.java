@@ -3,10 +3,10 @@ package kellonge.flightcrawler.extension;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 
-public class MultiRequestPage extends Page {
+public class PageExtension extends Page {
 
-	public static MultiRequestPage create(Page page) {
-		MultiRequestPage multiRequestPage = new MultiRequestPage();
+	public static PageExtension create(Page page) {
+		PageExtension multiRequestPage = new PageExtension();
 		multiRequestPage.setHtml(page.getHtml());
 		multiRequestPage.setNeedCycleRetry(page.isNeedCycleRetry());
 		multiRequestPage.setRawText(page.getRawText());
@@ -17,7 +17,7 @@ public class MultiRequestPage extends Page {
 		return multiRequestPage;
 	}
 
-	public MultiRequestPage() {
+	public PageExtension() {
 	}
 
 	private Request continueRequest;

@@ -38,7 +38,6 @@ public class FlightScheduleManager {
 				try {
 					BeanUtils.copyProperties(flightScheduleHistory,
 							flightScheduleOld);
-					flightScheduleHistory.setID("");
 					flightScheduleHistory.setFlag(-1);
 					dao.saveOrUpdate(flightScheduleHistory);
 					String id = flightScheduleOld.getID();
@@ -52,8 +51,9 @@ public class FlightScheduleManager {
 				} finally {
 					DataAccessObject.closeSession();
 				}
+			} else {
+				dao.saveOrUpdate(flightSchedule);
 			}
-
 		} else {
 			try {
 				flightSchedule.setCreateDate(new Date());

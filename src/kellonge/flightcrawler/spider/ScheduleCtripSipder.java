@@ -20,6 +20,8 @@ import javassist.expr.NewArray;
 import javax.management.JMException;
 
 import kellonge.flightcrawler.config.Configuration;
+import kellonge.flightcrawler.extension.SpiderExtension;
+import kellonge.flightcrawler.extension.SpiderListenerExtension;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.manager.CityManager;
@@ -27,7 +29,6 @@ import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
- 
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -43,8 +44,9 @@ import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 public class ScheduleCtripSipder {
 
 	private static Logger logger = Logger.getLogger(ScheduleCtripSipder.class);
+	private static SpiderExtension flightCrawler = null;
 
-	public static Spider GetSpider() {
+	private static List<Request> getSpiderRequest() {
 		List<City> citys = new CityManager().getCitys();
 		List<Request> urls = new ArrayList<Request>();
 
@@ -52,15 +54,13 @@ public class ScheduleCtripSipder {
 
 			for (int i = 0; i < citys.size(); i++) {
 				for (int j = 0; j < citys.size(); j++) {
-					Request request = new Request(
-							String.format(
-									"http://flights.ctrip.com/schedule/kmg.sha.html?%s%s",
-									citys.get(i).getCityCode1(), citys.get(j)
-											.getCityCode1()));
+					Request request = new Request(String.format(
+							"http://flights.ctrip.com/schedule/%s.%s.html",
+							citys.get(i).getCityCode1(), citys.get(j)
+									.getCityCode1()));
 					urls.add(request);
 				}
 			}
-
 			try {
 				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
 						+ "/flights.ctrip.com.urls.txt"));
@@ -71,10 +71,17 @@ public class ScheduleCtripSipder {
 			}
 		}
 
+		return urls;
+
+	}
+
+	public static SpiderExtension GetSpider() {
+		List<Request> urls = getSpiderRequest();
 		List<SpiderListener> listeners = new ArrayList<SpiderListener>();
 		listeners.add(listener);
-		Spider flightCrawler = Spider
-				.create(new ScheduleCtripPageProcess())
+		flightCrawler = SpiderExtension.create(new ScheduleCtripPageProcess());
+		flightCrawler
+				.setExitWhenComplete(true)
 				.setUUID("flights.ctrip.com")
 				.thread(Configuration.getThreadNum())
 				.addRequest(urls.toArray(new Request[urls.size()]))
@@ -83,20 +90,14 @@ public class ScheduleCtripSipder {
 				.addPipeline(new ScheduleCtripPipline())
 				.setSpiderListeners(listeners)
 				.addPipeline(new ConsolePipeline());
-		try {
-			SpiderMonitor.instance().register(flightCrawler);
-		} catch (JMException e) {
-			e.printStackTrace();
-		}		
 		return flightCrawler;
 	}
 
-	private static SpiderListener listener = new SpiderListener() {
+	private static SpiderListenerExtension listener = new SpiderListenerExtension() {
 
 		@Override
 		public void onSuccess(Request request) {
 			logger.info("[success] url:" + request.getUrl());
-
 		}
 
 		@Override
@@ -104,6 +105,16 @@ public class ScheduleCtripSipder {
 			ErrorUrlWriter.Print(request.getUrl());
 			logger.info("[error] url:" + request.getUrl() + "\n");
 
+		}
+
+		@Override
+		public void onFinish(Spider spider) {
+			logger.info("all request has finish.");
+			if (Configuration.isAutoRestart()) {
+				flightCrawler = null;
+				flightCrawler = GetSpider();
+				flightCrawler.start();
+			}
 		}
 	};
 }

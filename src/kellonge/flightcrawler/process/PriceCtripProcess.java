@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import kellonge.flightcrawler.config.Configuration;
-import kellonge.flightcrawler.extension.MultiRequestPage;
+import kellonge.flightcrawler.extension.PageExtension;
 import kellonge.flightcrawler.model.FlightInfo;
 import kellonge.flightcrawler.model.FlightPrice;
 import kellonge.flightcrawler.utils.DateTimeUtils;
@@ -28,7 +28,7 @@ public class PriceCtripProcess implements PageProcessor {
 	@Override
 	public void process(Page page) {
 		if (page.getUrl().regex("flights.ctrip.com/booking").match()) {
-			MultiRequestPage multiRequestPage = (MultiRequestPage) page;
+			PageExtension multiRequestPage = (PageExtension) page;
 			String rand = page.getHtml().regex("ajaxRequest\\(url.*\'\\);")
 					.regex("\\d\\.\\d+").get();
 			String url = page

@@ -35,6 +35,7 @@ public class Configuration {
 	private static int TimeOut = 5000;
 	private static boolean UseCachedQueue = false;
 	private static boolean UseProxy = false;
+	private static boolean AutoRestart = false;
 
 	/**
 	 * 初始化配置
@@ -138,6 +139,11 @@ public class Configuration {
 			if (useProxy != null && !useProxy.getText().equals("")) {
 				setUseProxy(Integer.valueOf(useProxy.getText()) == 1);
 			}
+			Node autoRestart = doc
+					.selectSingleNode("//crawler-common/auto-restart");
+			if (autoRestart != null && !autoRestart.getText().equals("")) {
+				setAutoRestart(Integer.valueOf(autoRestart.getText()) == 1);
+			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
 		} catch (Exception e) {
@@ -199,6 +205,14 @@ public class Configuration {
 
 	public static void setHibernateConfig(String hibernateConfig) {
 		HibernateConfig = hibernateConfig;
+	}
+
+	public static boolean isAutoRestart() {
+		return AutoRestart;
+	}
+
+	public static void setAutoRestart(boolean autoRestart) {
+		AutoRestart = autoRestart;
 	}
 
 }

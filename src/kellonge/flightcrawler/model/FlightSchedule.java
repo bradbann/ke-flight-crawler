@@ -257,13 +257,13 @@ public class FlightSchedule {
 	@Override
 	public boolean equals(Object obj) {
 		FlightSchedule o = (FlightSchedule) obj;
-		if (AirLineID != o.AirLineID) {
+		if (!StringUtils.equals(AirLineID, o.AirLineID)) {
 			return false;
 		}
-		if (DeptAirportID != o.DeptAirportID) {
+		if (!StringUtils.equals(DeptAirportID, o.DeptAirportID)) {
 			return false;
 		}
-		if (ArrAirportID != o.ArrAirportID) {
+		if (!StringUtils.equals(ArrAirportID, o.ArrAirportID)) {
 			return false;
 		}
 		if (DeptCityID != o.DeptCityID) {
