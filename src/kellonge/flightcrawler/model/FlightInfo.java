@@ -9,7 +9,7 @@ import kellonge.flightcrawler.utils.DateTimeUtils;
 
 public class FlightInfo {
 
-	private int ID;
+	private String ID;
 	private String AirLineName;
 	private int AirLineID;
 	private String DeptAirportName;
@@ -32,7 +32,7 @@ public class FlightInfo {
 	private String DeptTerminal;
 	private boolean IsStopOver;
 	private BigDecimal LowPrice;
-	private int PriceID;
+	private String PriceID;
 	private int AheadDay;
 	private int Flag;
 	private String AirLineCode;
@@ -44,21 +44,14 @@ public class FlightInfo {
 	private boolean IsFood;
 	private BigDecimal AdditionalFee;
 	private List<FlightPrice> FlightPrices;
-	private int FlightScheduleID;
+	private String FlightScheduleID;
+	private String RequestParam;
 
-	@Override
-	public String toString() {
-		return String.format("%s(%s)  %s(%s)--%s(%s) %s", FlightNo,
-				getAirLineName(), DeptAirportName,
-				DateTimeUtils.format(DeptTime), ArrAirportName,
-				DateTimeUtils.format(ArrTime), LowPrice);
-	}
-
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public void setID(int iD) {
+	public void setID(String iD) {
 		ID = iD;
 	}
 
@@ -246,11 +239,11 @@ public class FlightInfo {
 		LowPrice = lowPrice;
 	}
 
-	public int getPriceID() {
+	public String getPriceID() {
 		return PriceID;
 	}
 
-	public void setPriceID(int priceID) {
+	public void setPriceID(String priceID) {
 		PriceID = priceID;
 	}
 
@@ -334,12 +327,20 @@ public class FlightInfo {
 		ArrAirportCode = arrAirportCode;
 	}
 
-	public int getFlightScheduleID() {
+	public String getFlightScheduleID() {
 		return FlightScheduleID;
 	}
 
-	public void setFlightScheduleID(int flightScheduleID) {
+	public void setFlightScheduleID(String flightScheduleID) {
 		FlightScheduleID = flightScheduleID;
+	}
+
+	public String getRequestParam() {
+		return RequestParam;
+	}
+
+	public void setRequestParam(String requestParam) {
+		RequestParam = requestParam;
 	}
 
 }

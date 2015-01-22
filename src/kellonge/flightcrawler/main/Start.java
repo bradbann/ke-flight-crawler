@@ -8,6 +8,6 @@ import kellonge.flightcrawler.spider.ScheduleCtripSipder;
 public class Start {
 	public static void main(String[] args) {
 		Configuration.init();
-		ScheduleCtripSipder.GetSpider().start();
+		PriceCtripSpider.GetSpider().start();
 	}
 }

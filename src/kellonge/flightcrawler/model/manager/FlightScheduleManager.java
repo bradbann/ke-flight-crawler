@@ -86,6 +86,30 @@ public class FlightScheduleManager {
 		return flightSchedules;
 	}
 
+	public FlightSchedule getFlightScheduleByParam(String strFlightNo,
+			Date flightDate) {
+		List<FlightSchedule> flightSchedules = getFlightSchedules(strFlightNo,
+				"", "", "");
+		for (FlightSchedule flightSchedule : flightSchedules) {
+			if (IsTodayFlight(flightSchedule, flightDate)) {
+				return flightSchedule;
+			}
+		}
+		return null;
+	}
+
+	public static boolean IsTodayFlight(FlightSchedule flightSchedule, Date date) {
+		String[] weekScheduleStrings = flightSchedule.getWeekSchedule().split(
+				",");		
+		int week = DateTimeUtils.getWeekOfDate(date);
+		if (weekScheduleStrings.length >= week) {
+			if ("1".equals(weekScheduleStrings[week - 1])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private Query getFlightSchedulesQuery(String strChange, String strFlightNo,
 			String strDeptAirportID, String strArrAirportID,
 			String strWeekSchedule) {

@@ -1,44 +1,28 @@
 package kellonge.flightcrawler.spider;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import javassist.expr.NewArray;
-
-import javax.management.JMException;
 
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.extension.SpiderExtension;
 import kellonge.flightcrawler.extension.SpiderListenerExtension;
 import kellonge.flightcrawler.model.City;
-import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.manager.CityManager;
+import kellonge.flightcrawler.model.manager.FlightInfoManager;
+import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
-import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.SpiderListener;
-import us.codecraft.webmagic.monitor.SpiderMonitor;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
-import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 
 public class ScheduleCtripSipder {

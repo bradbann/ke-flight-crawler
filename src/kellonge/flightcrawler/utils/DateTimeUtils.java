@@ -207,6 +207,22 @@ public final class DateTimeUtils {
 	}
 
 	/**
+	 * 返回当前日期处于周几
+	 * 
+	 * @param
+	 * @return 返回当前日期处于周几，错误则返回-1
+	 */
+	public static int getWeekOfDate(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int weekofDate= calendar.get(Calendar.DAY_OF_WEEK)-1;
+		if (weekofDate<=0) {
+			weekofDate=7;
+		}
+		return weekofDate;
+	}
+
+	/**
 	 * 按日期对象距离今天的天数
 	 * 
 	 * @param date
@@ -222,7 +238,7 @@ public final class DateTimeUtils {
 		long t1 = c.getTime().getTime();
 		return (int) (t / 1000 - t1 / 1000) / 3600 / 24;
 	}
-	
+
 	/**
 	 * 将指定的时间转换成Time对象
 	 * 
@@ -257,4 +273,5 @@ public final class DateTimeUtils {
 		return time3;
 
 	}
+
 }

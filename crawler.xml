@@ -84,11 +84,11 @@
 		<!-- one url max queue retry num. default is 1 -->
 		<cycle-retry-times>2</cycle-retry-times>
 		<!-- in one thread max interval between two request. default is 6000ms -->
-		<sleep-time>6000</sleep-time>
+		<sleep-time>5000</sleep-time>
 		<!-- max time before request is terminate. default is 5000ms -->
 		<time-out>10000</time-out>
 		<!-- use file urls.1: true 0:false default is 0 -->
-		<use-cached-queue>1</use-cached-queue>
+		<use-cached-queue>0</use-cached-queue>
 		<!-- use proxy.1: true 0:false default is 0 -->
 		<use-proxy>0</use-proxy>
 		<!-- when request is finsih spider restart 1:true 0:false default is 0 -->

@@ -5,17 +5,20 @@
 
 <hibernate-mapping package="kellonge.flightcrawler.model">
 	<class name="FlightInfo" table="FlightInfo">
-		<id name="ID" column="ID" />		
+	       <id name="ID" column="ID" type="string">
+            <generator class="uuid.hex"/>
+        </id> 
 		<property name="CreateDate" type="timestamp" />
-		<property name="FlightDate" type="timestamp" />
+		<property name="FlightDate" type="date" />
 		<property name="DataSource" type="string" />
-		<property name="PriceID" type="int" />
+		<property name="PriceID" type="string" />
 		<property name="AheadDay" type="int" />
 		<property name="LowPrice" type="big_decimal" />
 		<property name="Flag" type="int" />
 		<property name="PunctualityRate" type="float" />
 		<property name="IsFood" type="boolean" />
 		<property name="AdditionalFee" type="big_decimal" />
-		<property name="FlightScheduleID" type="int" />		
+		<property name="FlightScheduleID" type="string" />		
+		<property name="RequestParam" type="string" />
 	</class>
 </hibernate-mapping>

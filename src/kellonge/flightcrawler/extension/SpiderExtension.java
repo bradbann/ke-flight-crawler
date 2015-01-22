@@ -43,8 +43,12 @@ public class SpiderExtension extends Spider {
 	protected void onFinish() {
 		if (CollectionUtils.isNotEmpty(getSpiderListeners())) {
 			for (SpiderListener spiderListener : getSpiderListeners()) {
-				SpiderListenerExtension spiderListenerExtension = (SpiderListenerExtension) spiderListener;
-				spiderListenerExtension.onFinish(this);
+				if (spiderListener.getClass().equals(
+						SpiderListenerExtension.class)) {
+					SpiderListenerExtension spiderListenerExtension = (SpiderListenerExtension) spiderListener;
+					spiderListenerExtension.onFinish(this);
+				}
+				
 			}
 		}
 	}

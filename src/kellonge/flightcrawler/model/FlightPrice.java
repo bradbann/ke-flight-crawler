@@ -4,27 +4,27 @@ import java.math.BigDecimal;
 
 public class FlightPrice {
 
-	private int ID;
-	private int FlightInfoID;
+	private String ID;
+	private String FlightInfoID;
 	private BigDecimal Price;
 	private String Cabin1;
 	private String Cabin2;
 	private String Cabin3;
 	private String Remark;
 
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public void setID(int iD) {
+	public void setID(String iD) {
 		ID = iD;
 	}
 
-	public int getFlightInfoID() {
+	public String getFlightInfoID() {
 		return FlightInfoID;
 	}
 
-	public void setFlightInfoID(int flightInfoID) {
+	public void setFlightInfoID(String flightInfoID) {
 		FlightInfoID = flightInfoID;
 	}
 

@@ -60,11 +60,11 @@ public class PriceCtripProcess implements PageProcessor {
 				flightInfo.setArrTime(DateTimeUtils.parseTime(DateTimeUtils
 						.format(arrDate, "HH:mm:ss")));
 				flightInfo.setAheadDay(Math.abs(DateTimeUtils
-						.countDays(deptDate)) + 1);
+						.countDays(deptDate))  );
 				flightInfo.setFlightInterval(DateTimeUtils.SubstractTime(
 						flightInfo.getDeptTime(), flightInfo.getArrTime()));
 				flightInfo.setArrCityCode(flightJson.getString("acc"));
-				flightInfo.setDeptCityName(flightJson.getString("dcc"));
+				flightInfo.setDeptCityCode(flightJson.getString("dcc"));
 				flightInfo.setArrAirportCode(flightJson.getString("apc"));
 				flightInfo.setDeptAirportCode(flightJson.getString("dpc"));
 				flightInfo.setDataSource("CTRIP");
@@ -92,6 +92,7 @@ public class PriceCtripProcess implements PageProcessor {
 				page.setSkip(true);
 			} else {
 				page.putField("ModelData", flightInfos);
+				page.putField("Request", page.getRequest());
 			}
 
 		}

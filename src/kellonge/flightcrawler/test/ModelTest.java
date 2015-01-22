@@ -5,21 +5,12 @@ import java.util.Date;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import kellonge.flightcrawler.utils.DateTimeUtils;
+import kellonge.flightcrawler.utils.Utility;
 
 public class ModelTest {
 	public static void main(String[] args) {
-		FlightSchedule flightSchedule = new FlightSchedule();
-		flightSchedule.setAirLineName("1");
-		flightSchedule.setDeptAirportName("1");
-		flightSchedule.setDeptCityName("1");
-		flightSchedule.setDeptTime(DateTimeUtils.parseTime("12:22:00"));
-		flightSchedule.setArrAirportName("1");
-		flightSchedule.setArrCityName("1");
-		flightSchedule.setArrTime(DateTimeUtils.parseTime("12:22:00"));
-		flightSchedule.setFlightNo("HU201");
-		flightSchedule.setExpiredDate(new Date());
-		flightSchedule.setCreateDate(new Date());
-		flightSchedule.setFlag(-99);
-		new FlightScheduleManager().saveFlightSchedule(flightSchedule);
+		FlightSchedule flightSchedule = new FlightScheduleManager()
+				.getFlightScheduleByParam("CA4142 ", Utility.toSafeDateTime("2015-1-21"));
+		System.out.println(flightSchedule);
 	}
 }
