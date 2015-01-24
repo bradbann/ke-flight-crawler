@@ -2,6 +2,8 @@ package kellonge.flightcrawler.process;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -16,8 +18,24 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.proxy.ProxyPool;
 
 public class PriceCtripProcess implements PageProcessor {
+
+	public PriceCtripProcess() {
+		List<String[]> httpProxyList = new ArrayList<String[]>();
+		httpProxyList.addAll(Configuration.getProxys());
+		if (Configuration.isUseProxy() && httpProxyList.size() > 0) {
+			ProxyPool proxyPool = site.enableHttpProxyPool().getHttpProxyPool();
+			proxyPool.validateWhenInit(true);
+			proxyPool.setProxyFilePath(Configuration.ROOT_PATH
+					+ "/data/lastUse.proxy");
+			for (String[] strings : httpProxyList) {
+				proxyPool.addProxy(strings);
+			}
+		}
+
+	}
 
 	private Site site = Site.me()
 			.setCycleRetryTimes(Configuration.getCycleRetryTimes())
@@ -59,7 +77,7 @@ public class PriceCtripProcess implements PageProcessor {
 				flightInfo.setArrTime(DateTimeUtils.parseTime(DateTimeUtils
 						.format(arrDate, "HH:mm:ss")));
 				flightInfo.setAheadDay(Math.abs(DateTimeUtils
-						.countDays(deptDate))  );
+						.countDays(deptDate)));
 				flightInfo.setFlightInterval(DateTimeUtils.SubstractTime(
 						flightInfo.getDeptTime(), flightInfo.getArrTime()));
 				flightInfo.setArrCityCode(flightJson.getString("acc"));

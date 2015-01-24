@@ -22,9 +22,7 @@ import kellonge.flightcrawler.utils.DateTimeUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
-import us.codecraft.webmagic.monitor.SpiderMonitor;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
-import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Selectable;
 
@@ -138,12 +136,7 @@ public class MainTest1 implements PageProcessor {
 				.addUrl(urls.toArray(new String[urls.size()]))
 				.addPipeline(new ToDatebasePipline())
 				.addPipeline(new ConsolePipeline());
-		try {
-			SpiderMonitor.instance().register(flightCrawler);
-		} catch (JMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		flightCrawler.start();
 
 	}

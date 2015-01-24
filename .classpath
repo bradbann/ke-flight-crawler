@@ -36,7 +36,6 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.34-bin.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.9.2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webmagic-core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webmagic-extension"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
