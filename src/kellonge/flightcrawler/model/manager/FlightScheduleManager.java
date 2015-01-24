@@ -52,7 +52,7 @@ public class FlightScheduleManager {
 					DataAccessObject.closeSession();
 				}
 			} else {
-				dao.saveOrUpdate(flightSchedule);
+				dao.saveOrUpdate(flightScheduleOld);
 			}
 		} else {
 			try {

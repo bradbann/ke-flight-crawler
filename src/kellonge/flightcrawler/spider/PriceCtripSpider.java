@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import kellonge.flightcrawler.config.Configuration;
-import kellonge.flightcrawler.extension.SpiderExtension;
-import kellonge.flightcrawler.extension.SpiderListenerExtension;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.manager.CityManager;
@@ -32,7 +30,7 @@ import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 public class PriceCtripSpider {
 
 	private static Logger logger = Logger.getLogger(PriceCtripSpider.class);
-	private static SpiderExtension flightCrawler = null;
+	private static Spider flightCrawler = null;
 
 	private static List<Request> getSpiderRequest() {
 		List<Request> urls = new ArrayList<Request>();
@@ -90,11 +88,11 @@ public class PriceCtripSpider {
 
 	}
 
-	public static SpiderExtension GetSpider() {
+	public static Spider GetSpider() {
 		List<Request> urls = getSpiderRequest();
 		List<SpiderListener> listeners = new ArrayList<SpiderListener>();
 		listeners.add(listener);
-		flightCrawler = SpiderExtension.create(new PriceCtripProcess());
+		flightCrawler = Spider.create(new PriceCtripProcess());
 		flightCrawler
 				.setExitWhenComplete(true)
 				.setUUID("flights.ctrip.com")
@@ -108,7 +106,7 @@ public class PriceCtripSpider {
 		return flightCrawler;
 	}
 
-	private static SpiderListenerExtension listener = new SpiderListenerExtension() {
+	private static SpiderListener listener = new SpiderListener() {
 
 		@Override
 		public void onSuccess(Request request) {

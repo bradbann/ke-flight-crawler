@@ -7,12 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kellonge.flightcrawler.config.Configuration;
-import kellonge.flightcrawler.extension.SpiderExtension;
-import kellonge.flightcrawler.extension.SpiderListenerExtension;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.manager.CityManager;
-import kellonge.flightcrawler.model.manager.FlightInfoManager;
-import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
@@ -25,10 +21,10 @@ import us.codecraft.webmagic.SpiderListener;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 
-public class ScheduleCtripSipder {
+public class ScheduleCtripSpider {
 
-	private static Logger logger = Logger.getLogger(ScheduleCtripSipder.class);
-	private static SpiderExtension flightCrawler = null;
+	private static Logger logger = Logger.getLogger(ScheduleCtripSpider.class);
+	private static Spider flightCrawler = null;
 
 	private static List<Request> getSpiderRequest() {
 		List<City> citys = new CityManager().getCitys();
@@ -36,15 +32,18 @@ public class ScheduleCtripSipder {
 
 		if (!Configuration.isUseCachedQueue()) {
 
-			for (int i = 0; i < citys.size(); i++) {
-				for (int j = 0; j < citys.size(); j++) {
-					Request request = new Request(String.format(
-							"http://flights.ctrip.com/schedule/%s.%s.html",
-							citys.get(i).getCityCode1(), citys.get(j)
-									.getCityCode1()));
-					urls.add(request);
-				}
-			}
+			// for (int i = 0; i < citys.size(); i++) {
+			// for (int j = 0; j < citys.size(); j++) {
+			// Request request = new Request(String.format(
+			// "http://flights.ctrip.com/schedule/%s.%s.html",
+			// citys.get(i).getCityCode1(), citys.get(j)
+			// .getCityCode1()));
+			// urls.add(request);
+			// }
+			// }
+
+			urls.add(new Request(
+					"http://flights.ctrip.com/schedule/kmg.bjs.html")); 
 			try {
 				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
 						+ "/flights.ctrip.com.urls.txt"));
@@ -59,11 +58,11 @@ public class ScheduleCtripSipder {
 
 	}
 
-	public static SpiderExtension GetSpider() {
+	public static Spider GetSpider() {
 		List<Request> urls = getSpiderRequest();
 		List<SpiderListener> listeners = new ArrayList<SpiderListener>();
 		listeners.add(listener);
-		flightCrawler = SpiderExtension.create(new ScheduleCtripPageProcess());
+		flightCrawler = Spider.create(new ScheduleCtripPageProcess());
 		flightCrawler
 				.setExitWhenComplete(true)
 				.setUUID("flights.ctrip.com")
@@ -77,7 +76,7 @@ public class ScheduleCtripSipder {
 		return flightCrawler;
 	}
 
-	private static SpiderListenerExtension listener = new SpiderListenerExtension() {
+	private static SpiderListener listener = new SpiderListener() {
 
 		@Override
 		public void onSuccess(Request request) {

@@ -92,6 +92,8 @@
 		<!-- use proxy.1: true 0:false default is 0 -->
 		<use-proxy>0</use-proxy>
 		<!-- when request is finsih spider restart 1:true 0:false default is 0 -->
-		<auto-restart>0</auto-restart>
+		<auto-restart>1</auto-restart>
+		<!-- spider which to start, can't empty or program can't start -->
+		<spider-name>PriceCtripSpider</spider-name>
 	</crawler-common>
 </root>

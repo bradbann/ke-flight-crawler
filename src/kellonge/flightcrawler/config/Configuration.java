@@ -36,6 +36,7 @@ public class Configuration {
 	private static boolean UseCachedQueue = false;
 	private static boolean UseProxy = false;
 	private static boolean AutoRestart = false;
+	private static String SpiderName = "";
 
 	/**
 	 * 初始化配置
@@ -144,6 +145,11 @@ public class Configuration {
 			if (autoRestart != null && !autoRestart.getText().equals("")) {
 				setAutoRestart(Integer.valueOf(autoRestart.getText()) == 1);
 			}
+			Node spiderName = doc
+					.selectSingleNode("//crawler-common/spider-name");
+			if (spiderName != null && !spiderName.getText().equals("")) {
+				setSpiderName(spiderName.getText());
+			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
 		} catch (Exception e) {
@@ -213,6 +219,14 @@ public class Configuration {
 
 	public static void setAutoRestart(boolean autoRestart) {
 		AutoRestart = autoRestart;
+	}
+
+	public static String getSpiderName() {
+		return SpiderName;
+	}
+
+	public static void setSpiderName(String spiderName) {
+		SpiderName = spiderName;
 	}
 
 }

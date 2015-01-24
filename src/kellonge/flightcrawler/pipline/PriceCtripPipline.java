@@ -9,7 +9,6 @@ import kellonge.flightcrawler.model.FlightInfo;
 import kellonge.flightcrawler.model.FlightPrice;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.manager.FlightInfoManager;
-import kellonge.flightcrawler.model.manager.FlightPriceManager;
 import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.ResultItems;
