@@ -16,16 +16,16 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask; 
+import java.util.concurrent.FutureTask;
 
-import org.apache.http.HttpHost; 
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProxyValidate {
 
-    private static Logger logger = LoggerFactory.getLogger(getClass());
-	
+	private static Logger logger = LoggerFactory.getLogger(ProxyValidate.class);
+
 	private static ExecutorService threadPool;
 
 	private static ExecutorService getThreadPool() {
@@ -96,35 +96,11 @@ public class ProxyValidate {
 
 			}
 		} catch (Exception e) {
-			logger.info("ip " + ip + " is not aviable"); 
+			logger.info("ip " + ip + " is not aviable");
 		}
 		if (rtv) {
-			System.out.println(ip + " is ok");
+			logger.info("ip " + ip + " is ok");
 		}
-
 		return rtv;
-	}
-
-	private static String convertStreamToString(InputStream is) {
-		if (is == null)
-			return "";
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "/n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return sb.toString();
-
 	}
 }

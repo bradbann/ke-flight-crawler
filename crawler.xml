@@ -23,70 +23,21 @@
 		<item
 			name="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.41 Safari/535.1 QQBrowser/6.9.11079.201"></item>
 	</user-agent>
-	<proxy>
-		﻿
-		<item ip="58.42.202.8" port="9797" />
-		<item ip="113.5.168.114" port="9797" />
-		<item ip="218.19.49.141" port="8090" />
-		<item ip="117.163.174.237" port="8123" />
-		<item ip="120.206.77.174" port="8123" />
-		<item ip="183.203.22.91" port="80" />
-		<item ip="117.171.165.152" port="8123" />
-		<item ip="117.68.170.45" port="8118" />
-		<item ip="223.246.39.108" port="9797" />
-		<item ip="222.87.129.218" port="843" />
-		<item ip="221.212.252.230" port="1920" />
-		<item ip="183.223.200.149" port="8123" />
-		<item ip="180.153.100.242" port="85" />
-		<item ip="114.221.44.101" port="8088" />
-		<item ip="117.10.241.111" port="8118" />
-		<item ip="124.88.67.13" port="80" />
-		<item ip="114.47.6.214" port="9064" />
-		<item ip="117.163.158.56" port="8123" />
-		<item ip="124.119.77.73" port="8088" />
-		<item ip="121.61.8.168" port="9797" />
-		<item ip="120.198.243.115" port="8081" />
-		<item ip="111.195.73.6" port="8118" />
-		<item ip="42.122.142.233" port="8090" />
-		<item ip="123.132.200.118" port="9797" />
-		<item ip="115.203.65.166" port="8585" />
-		<item ip="111.176.138.178" port="18186" />
-		<item ip="59.50.165.253" port="8118" />
-		<item ip="119.49.191.235" port="8118" />
-		<item ip="114.228.176.225" port="8118" />
-		<item ip="210.73.1.144" port="8118" />
-		<item ip="60.218.30.39" port="9797" />
-		<item ip="117.165.17.96" port="8123" />
-		<item ip="120.35.83.193" port="8118" />
-		<item ip="122.246.144.37" port="8090" />
-		<item ip="116.209.8.251" port="8118" />
-		<item ip="222.160.34.102" port="18186" />
-		<item ip="218.93.104.210" port="8118" />
-		<item ip="110.18.232.225" port="8118" />
-		<item ip="39.188.174.87" port="8123" />
-		<item ip="121.14.138.56" port="81" />
-		<item ip="117.171.242.73" port="8123" />
-		<item ip="113.25.65.247" port="8118" />
-		<item ip="218.22.254.197" port="63000" />
-		<item ip="223.83.143.43" port="8123" />
-		<item ip="183.203.22.103" port="80" />
-		<item ip="24.224.128.222" port="9064" />
-		<item ip="103.254.208.53" port="3128" />
-		<item ip="127.73.236.18" port="80" />
-		<item ip="185.68.154.178" port="8080" />
-		<item ip="191.189.148.141" port="3128" />
+	<proxy> 
+
+
 	</proxy>
 	<crawler-common>
 		<!-- all cache file,result report etc. default is user.dir/data -->
 		<data-path></data-path>
 		<!-- spider thread num. default is 1 -->
-		<thread-num>2</thread-num>
+		<thread-num>20</thread-num>
 		<!-- one url max queue retry num. default is 1 -->
 		<cycle-retry-times>2</cycle-retry-times>
 		<!-- in one thread max interval between two request. default is 6000ms -->
 		<sleep-time>5000</sleep-time>
 		<!-- max time before request is terminate. default is 5000ms -->
-		<time-out>10000</time-out>
+		<time-out>15000</time-out>
 		<!-- use file urls.1: true 0:false default is 0 -->
 		<use-cached-queue>0</use-cached-queue>
 		<!-- use proxy.1: true 0:false default is 0 -->
@@ -95,5 +46,9 @@
 		<auto-restart>0</auto-restart>
 		<!-- spider which to start, can't empty or program can't start -->
 		<spider-name>PriceCtripSpider</spider-name>
+		<!-- proxy ip get address -->
+		<proxy-get-address>http://erwx.daili666.com/ip/?tid=559566142973866</proxy-get-address>
+		<!-- proxy retry time -->
+		<proxy-retry>5</proxy-retry>
 	</crawler-common>
 </root>

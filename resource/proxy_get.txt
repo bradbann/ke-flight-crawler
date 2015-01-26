@@ -6,3 +6,14 @@ $(".tb tbody tr").each(function(){
 	var port=$(this).find('td:eq(2)').text().replace(/.*;/g,"");
 	str+="<item ip=\""+ip+"\" port=\""+port+"\" />\n";
 })
+
+http://www.xici.net.co/nt/1
+
+var str='';
+$('#ip_list tr').each(function(i,item){
+	if ($(this).find('td:eq(7) .fast').length>0) {
+		var ip=$(this).find('td:eq(2)').text();
+		var port=$(this).find('td:eq(3)').text();
+		str+="<item ip=\""+ip+"\" port=\""+port+"\" />\n";
+	};
+});

@@ -165,8 +165,8 @@ public class Proxy implements Delayed, Serializable {
 	@Override
 	public String toString() {
 
-		String re = String.format("host: %15s >> %5dms >> success: %-3.2f%% >> borrow: %d", httpHost.getAddress().getHostAddress(), responseTime,
-				successNum * 100.0 / borrowNum, borrowNum);
+		String re = String.format("host: %15s >> %5dms >> success: %-3.2f%% >> borrow: %d>> fail: %d", httpHost.getAddress().getHostAddress(), responseTime,
+				successNum * 100.0 / borrowNum, borrowNum,failedNum);
 		return re;
 
 	}

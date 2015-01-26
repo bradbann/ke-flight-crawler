@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import kellonge.flightcrawler.utils.Utility;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -33,10 +35,12 @@ public class Configuration {
 	private static int CycleRetryTimes = 1;
 	private static int SleepTime = 6000;
 	private static int TimeOut = 5000;
+	private static int ProxyPoolItemRetry = 5;
 	private static boolean UseCachedQueue = false;
 	private static boolean UseProxy = false;
 	private static boolean AutoRestart = false;
 	private static String SpiderName = "";
+	private static String ProxyGetAddress = "";
 
 	/**
 	 * 初始化配置
@@ -150,6 +154,20 @@ public class Configuration {
 			if (spiderName != null && !spiderName.getText().equals("")) {
 				setSpiderName(spiderName.getText());
 			}
+
+			Node proxyGetAddress = doc
+					.selectSingleNode("//crawler-common/proxy-get-address");
+			if (proxyGetAddress != null
+					&& !proxyGetAddress.getText().equals("")) {
+				setProxyGetAddress(proxyGetAddress.getText().trim());
+			}
+
+			Node proxyRetry = doc
+					.selectSingleNode("//crawler-common/proxy-retry");
+			if (proxyRetry != null && !proxyRetry.getText().equals("")) {
+				setProxyPoolItemRetry(Utility.toSafeInt(proxyRetry.getText()
+						.trim()));
+			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
 		} catch (Exception e) {
@@ -227,6 +245,22 @@ public class Configuration {
 
 	public static void setSpiderName(String spiderName) {
 		SpiderName = spiderName;
+	}
+
+	public static String getProxyGetAddress() {
+		return ProxyGetAddress;
+	}
+
+	public static void setProxyGetAddress(String proxyGetAddress) {
+		ProxyGetAddress = proxyGetAddress;
+	}
+
+	public static int getProxyPoolItemRetry() {
+		return ProxyPoolItemRetry;
+	}
+
+	public static void setProxyPoolItemRetry(int proxyPoolItemRetry) {
+		ProxyPoolItemRetry = proxyPoolItemRetry;
 	}
 
 }

@@ -29,6 +29,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import kellonge.flightcrawler.utils.DateTimeUtils;
+
 /**
  * Entrance of a crawler.<br>
  * A spider contains four modules: Downloader, Scheduler, PageProcessor and
@@ -323,9 +325,10 @@ public class Spider implements Runnable, Task {
 					public void run() {
 						try {
 							processRequest(requestFinal);
-							onSuccess(requestFinal);
+
 						} catch (Exception e) {
 							onError(requestFinal);
+							e.printStackTrace();
 							logger.error("process request " + requestFinal
 									+ " error", e);
 						} finally {
@@ -422,33 +425,44 @@ public class Spider implements Runnable, Task {
 		}
 	}
 
-	protected void processRequest(Request request) {
+	protected boolean processRequestExt(Request request) {
 		Page page = downloader.download(request, this);
 		if (page == null) {
-			sleep(site.getSleepTime());
-			onError(request);
-			return;
+			return false;
 		}
 		// for cycle retry
 		if (page.isNeedCycleRetry()) {
 			extractAndAddRequests(page, true);
-			sleep(site.getSleepTime());
-			return;
+			return true;
 		}
 		pageProcessor.process(page);
+		// page need new request
+		if (!request.isFinsih()) {
+			processRequestExt(request);
+		}
 		extractAndAddRequests(page, spawnUrl);
+		// for proxy status management
+		request.putExtra(Request.STATUS_CODE, page.getStatusCode());
+		if (page.isPageBizError()) {
+			return false;
+		}
 		if (!page.getResultItems().isSkip()) {
 			for (Pipeline pipeline : pipelines) {
 				pipeline.process(page.getResultItems(), this);
 			}
 		}
-		// page need new request
-		if (page.getContinueRequest() != null) {
-			processRequest(page.getContinueRequest());
-		}
-		// for proxy status management
-		request.putExtra(Request.STATUS_CODE, page.getStatusCode());
+		return true;
+	}
+
+	protected void processRequest(Request request) {
+		boolean rtv = processRequestExt(request);
 		sleep(site.getSleepTime());
+
+		if (rtv) {
+			onSuccess(request);
+		} else {
+			onError(request);
+		}
 	}
 
 	protected void sleep(int time) {
@@ -470,7 +484,7 @@ public class Spider implements Runnable, Task {
 	private void addRequest(Request request) {
 		if (site.getDomain() == null && request != null
 				&& request.getUrl() != null) {
-			site.setDomain(UrlUtils.getDomain(request.getUrl()));
+			site.setDomain(UrlUtils.getDomain(request.getInitUrl()));
 		}
 		scheduler.push(request, this);
 	}

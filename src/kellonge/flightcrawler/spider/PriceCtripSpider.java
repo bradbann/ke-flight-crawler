@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.City;
@@ -26,11 +27,15 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.SpiderListener;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
+import us.codecraft.webmagic.scheduler.MonitorableScheduler;
 
 public class PriceCtripSpider {
 
 	private static Logger logger = Logger.getLogger(PriceCtripSpider.class);
 	private static Spider flightCrawler = null;
+
+	private static AtomicLong successCnt = new AtomicLong(0);
+	private static AtomicLong errorCnt = new AtomicLong(0);
 
 	private static List<Request> getSpiderRequest() {
 		List<Request> urls = new ArrayList<Request>();
@@ -44,7 +49,7 @@ public class PriceCtripSpider {
 				int DayAhead = 1;
 				for (int i = 0; i <= DayAheadIneterval.length; i++) {
 					if (i > 0) {
-						DayAhead = DayAhead + DayAheadIneterval[i-1];
+						DayAhead = DayAhead + DayAheadIneterval[i - 1];
 					}
 					while (!FlightScheduleManager.IsTodayFlight(flightSchedule,
 							DateTimeUtils.addDay(now, DayAhead))) {
@@ -63,16 +68,6 @@ public class PriceCtripSpider {
 					urls.add(request);
 				}
 			}
-			// urls.add(new Request(String
-			// .format("http://flights.ctrip.com/booking/BJS-SHA-day-1.html")));
-			//
-			// urls.add(new Request(String
-			// .format("http://flights.ctrip.com/booking/BJS-SHA-day-3.html")));
-			//
-			// urls.add(new Request(String
-			// .format("http://flights.ctrip.com/booking/BJS-SHA-day-7.html")));
-			// urls.add(new Request(String
-			// .format("http://flights.ctrip.com/booking/kmg-SHA-day-10.html")));
 
 			try {
 				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
@@ -102,7 +97,9 @@ public class PriceCtripSpider {
 						new FileCacheQueueScheduler(Configuration.getDataPath()))
 				.addPipeline(new PriceCtripPipline())
 				.setSpiderListeners(listeners)
-				.addPipeline(new ConsolePipeline());
+		// .addPipeline(new ConsolePipeline())
+		;
+
 		return flightCrawler;
 	}
 
@@ -110,13 +107,20 @@ public class PriceCtripSpider {
 
 		@Override
 		public void onSuccess(Request request) {
-			logger.info("[success] url:" + request.getUrl());
+			logger.info("[success] url:" + request.getInitUrl());
+			if (request.getExtra(Request.BIZSUCCESS) != null
+					&& request.getExtra(Request.BIZSUCCESS).equals(1)) {
+				successCnt.getAndIncrement();
+			}
+			System.out.println(getSipderStatus());
 		}
 
 		@Override
 		public void onError(Request request) {
-			ErrorUrlWriter.Print(request.getUrl());
-			logger.info("[error] url:" + request.getUrl() + "\n");
+			errorCnt.getAndIncrement();
+			ErrorUrlWriter.Print(request.getInitUrl());
+			logger.info("[error] url:" + request.getInitUrl() + "\n");
+			System.out.println(getSipderStatus());
 
 		}
 
@@ -126,4 +130,19 @@ public class PriceCtripSpider {
 
 		}
 	};
+
+	private static String getSipderStatus() {
+		String str = "";
+		MonitorableScheduler monitorableScheduler = (MonitorableScheduler) flightCrawler
+				.getScheduler();
+		str += "totalQueue:"
+				+ monitorableScheduler.getTotalRequestsCount(flightCrawler);
+		str += " leftQueue:"
+				+ monitorableScheduler.getLeftRequestsCount(flightCrawler);
+		str += " totalRequest:" + flightCrawler.getPageCount();
+		str += " error:" + errorCnt.get();
+		str += " success:" + successCnt.get();
+
+		return str;
+	}
 }

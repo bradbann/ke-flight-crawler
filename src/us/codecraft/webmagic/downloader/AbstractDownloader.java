@@ -47,13 +47,15 @@ public abstract class AbstractDownloader implements Downloader {
             page.addTargetRequest(request.setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, 1));
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
-            cycleTriedTimes++;
+            if (!request.isFinsih()) {
+                cycleTriedTimes++;
+			}
             if (cycleTriedTimes >= site.getCycleRetryTimes()) {
                 return null;
             }
             page.addTargetRequest(request.setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
         }
         page.setNeedCycleRetry(true);
-        return page;
-    }
+		return page;
+	}
 }
