@@ -5,10 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.manager.CityManager;
+import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
@@ -20,11 +22,15 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.SpiderListener;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
+import us.codecraft.webmagic.scheduler.MonitorableScheduler;
 
 public class ScheduleCtripSpider {
 
 	private static Logger logger = Logger.getLogger(ScheduleCtripSpider.class);
 	private static Spider flightCrawler = null;
+
+	private static AtomicLong successCnt = new AtomicLong(0);
+	private static AtomicLong errorCnt = new AtomicLong(0);
 
 	private static List<Request> getSpiderRequest() {
 		List<City> citys = new CityManager().getCitys();
@@ -32,18 +38,20 @@ public class ScheduleCtripSpider {
 
 		if (!Configuration.isUseCachedQueue()) {
 
-			// for (int i = 0; i < citys.size(); i++) {
-			// for (int j = 0; j < citys.size(); j++) {
-			// Request request = new Request(String.format(
-			// "http://flights.ctrip.com/schedule/%s.%s.html",
-			// citys.get(i).getCityCode1(), citys.get(j)
-			// .getCityCode1()));
-			// urls.add(request);
-			// }
-			// }
+			for (int i = 0; i < citys.size(); i++) {
+				for (int j = 0; j < citys.size(); j++) {
+					Request request = new Request(String.format(
+							"http://flights.ctrip.com/schedule/%s.%s.html",
+							citys.get(i).getCityCode1(), citys.get(j)
+									.getCityCode1()));
+					urls.add(request);
+				}
+			}
 
-			urls.add(new Request(
-					"http://flights.ctrip.com/schedule/kmg.bjs.html")); 
+			// urls.add(new Request(
+			// "http://flights.ctrip.com/schedule/kmg.bjs.html"));
+
+			new FlightScheduleManager().updateFlightScheduleStatusBeforeFetch();
 			try {
 				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
 						+ "/flights.ctrip.com.urls.txt"));
@@ -72,7 +80,8 @@ public class ScheduleCtripSpider {
 						new FileCacheQueueScheduler(Configuration.getDataPath()))
 				.addPipeline(new ScheduleCtripPipline())
 				.setSpiderListeners(listeners)
-				.addPipeline(new ConsolePipeline());
+		// .addPipeline(new ConsolePipeline())
+		;
 		return flightCrawler;
 	}
 
@@ -80,24 +89,49 @@ public class ScheduleCtripSpider {
 
 		@Override
 		public void onSuccess(Request request) {
-			logger.info("[success] url:" + request.getUrl());
+			logger.info("[success] url:" + request.getInitUrl());
+			if (request.getExtra(Request.BIZSUCCESS) != null
+					&& request.getExtra(Request.BIZSUCCESS).equals(1)) {
+				successCnt.getAndIncrement();
+			}
+			System.out.println(getSipderStatus());
 		}
 
 		@Override
 		public void onError(Request request) {
-			ErrorUrlWriter.Print(request.getUrl());
-			logger.info("[error] url:" + request.getUrl() + "\n");
+			errorCnt.getAndIncrement();
+			ErrorUrlWriter.Print(request.getInitUrl());
+			logger.info("[error] url:" + request.getInitUrl() + "\n");
+			System.out.println(getSipderStatus());
 
 		}
 
 		@Override
 		public void onFinish(Spider spider) {
 			logger.info("all request has finish.");
+			new FlightScheduleManager().updateFlightScheduleStatusAfterFetch();
 			if (Configuration.isAutoRestart()) {
+				errorCnt.set(0);
+				successCnt.set(0);
 				flightCrawler = null;
 				flightCrawler = GetSpider();
 				flightCrawler.start();
 			}
 		}
 	};
+
+	private static String getSipderStatus() {
+		String str = "";
+		MonitorableScheduler monitorableScheduler = (MonitorableScheduler) flightCrawler
+				.getScheduler();
+		str += "totalQueue:"
+				+ monitorableScheduler.getTotalRequestsCount(flightCrawler);
+		str += " leftQueue:"
+				+ monitorableScheduler.getLeftRequestsCount(flightCrawler);
+		str += " totalRequest:" + flightCrawler.getPageCount();
+		str += " error:" + errorCnt.get();
+		str += " success:" + successCnt.get();
+
+		return str;
+	}
 }

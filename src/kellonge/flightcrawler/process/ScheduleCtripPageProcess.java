@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -19,35 +20,38 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.proxy.ProxyPool;
 import us.codecraft.webmagic.selector.Selectable;
 
 public class ScheduleCtripPageProcess implements PageProcessor {
 	private Random random = new Random();
-	private String[] UserAgents;
 	private Site site = Site.me()
 			.setCycleRetryTimes(Configuration.getCycleRetryTimes())
 			.setSleepTime(Configuration.getSleepTime())
-			.setTimeOut(Configuration.getTimeOut());
+			.setTimeOut(Configuration.getTimeOut())
+			.setDatabaseUUID(UUID.randomUUID().toString());
 
-	public ScheduleCtripPageProcess() {		
-		List<String[]> httpProxyList = Configuration.getProxys();
-		List<String> userAgents = Configuration.getUserAgents();
-		if (Configuration.isUseProxy() && httpProxyList.size() > 0) {
-			site.setHttpProxyPool(httpProxyList);
-			site.getHttpProxyPool().setProxyFilePath(
-					Configuration.ROOT_PATH + "/data/lastUse.proxy");
-		}
-		if (userAgents.size() > 0) {
-			site.setUserAgent(userAgents.get(0));
-			UserAgents = userAgents.toArray(new String[userAgents.size()]);
+	public ScheduleCtripPageProcess() {
+		List<String[]> httpProxyList = new ArrayList<String[]>();
+		httpProxyList.addAll(Configuration.getProxys());
+		if (Configuration.isUseProxy()) {
+			ProxyPool proxyPool = site.enableHttpProxyPool().getHttpProxyPool();
+			proxyPool.validateWhenInit(true);
+			proxyPool.setWebGet(true);
+			proxyPool
+					.setMinProxy((int) Math.round(Configuration.getThreadNum() * 1.2));
+			proxyPool.addProxy(httpProxyList.toArray(new String[httpProxyList
+					.size()][]));
+			proxyPool.checkAndGetProxyFromWeb();
+			proxyPool.setProxyFilePath(Configuration.ROOT_PATH
+					+ "/data/lastUse.proxy");
 		}
 
 	}
 
 	@Override
 	public void process(Page page) {
-	
-		site.setUserAgent(UserAgents[random.nextInt(UserAgents.length)]);
+
 		String arrCityName = "", deptCityName = "";
 		String cityInfo = page.getHtml()
 				.xpath("//h4[@class='result_type']/text()").get();
@@ -118,7 +122,8 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			page.setSkip(true);
 		} else {
 			page.putField("ModelData", flightList);
-			page.putField("Request", page.getRequest());		
+			page.putField("Request", page.getRequest());
+			page.getRequest().putExtra(Request.BIZSUCCESS, 1);
 		}
 		// 分页
 		for (Selectable links : page.getHtml()

@@ -5,10 +5,10 @@
 
 <hibernate-mapping package="kellonge.flightcrawler.model">
 	<class name="FlightSchedule" table="FlightSchedule">
-	       <id name="ID" column="ID" type="string">
-            <generator class="uuid.hex"/>
-        </id> 
-		<property name="AirLineName"  type="string" />
+		<id name="ID" column="ID" type="string">
+			<generator class="uuid.hex" />
+		</id>
+		<property name="AirLineName" type="string" />
 		<property name="AirLineID" type="string" />
 		<property name="DeptAirportName" type="string" />
 		<property name="DeptAirportID" type="string" />
@@ -24,7 +24,7 @@
 		<property name="FlightNo" type="string" />
 		<property name="PlanModel" type="string" />
 		<property name="CreateDate" type="timestamp" />
-		<property name="LastUpdate" type="timestamp" />
+		<property name="LastUpdate" type="timestamp"  insert="false" update="false"/>
 		<property name="ExpiredDate" type="timestamp" />
 		<property name="DataSource" type="string" />
 		<property name="ArrTerminal" type="string" />
@@ -32,6 +32,8 @@
 		<property name="IsStopOver" type="boolean" />
 		<property name="WeekSchedule" type="string" />
 		<property name="RequestParam" type="string" />
+		<property name="SpiderID" type="string" />
 		<property name="Flag" type="int" />
+		<property name="NewFlag" type="int" />
 	</class>
 </hibernate-mapping>

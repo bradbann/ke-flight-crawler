@@ -105,9 +105,10 @@ public class ProxyPool {
 	public void checkAndGetProxyFromWeb() {
 		int proxyNum = allProxy.size();
 		if (proxyNum < minProxy) {
-			logger.info("begine to get web proxy. num:" + (minProxy - proxyNum));
+			int num = minProxy - proxyNum + 5;
+			logger.info("begine to get web proxy. num:" + num);
 			List<String[]> hosts = ProxyWebGet.getNewProxy(ProxyWebGet
-					.urlBuilder(minProxy - proxyNum));
+					.urlBuilder(num));
 			boolean old = validateWhenInit;
 			validateWhenInit = false;
 			addProxy(hosts.toArray(new String[hosts.size()][]));
@@ -269,9 +270,13 @@ public class ProxyPool {
 			p.fail(statusCode);
 			break;
 		}
+		// System.out.println(allProxyStatus());
 		if (p.getFailedNum() > Configuration.getProxyPoolItemRetry()) {
 			p.setReuseTimeInterval(reviveTime);
 			allProxy.remove(p.getHttpHost().getAddress().getHostAddress());
+			if (isWebGet) {
+				checkAndGetProxyFromWeb();
+			}
 			logger.error("remove proxy >>>> " + host + ">>>>"
 					+ p.getFailedType() + " >>>> remain proxy >>>> "
 					+ proxyQueue.size());
@@ -290,13 +295,15 @@ public class ProxyPool {
 		// }
 		// }
 		try {
-			proxyQueue.put(p);
+			if (!proxyQueue.contains(p)) {
+				proxyQueue.put(p);
+			}
 		} catch (InterruptedException e) {
 			logger.warn("proxyQueue return proxy error", e);
 		}
 		if (isWebGet) {
 			checkAndGetProxyFromWeb();
-		} 
+		}
 	}
 
 	public String allProxyStatus() {

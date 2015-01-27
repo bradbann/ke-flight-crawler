@@ -325,7 +325,6 @@ public class Spider implements Runnable, Task {
 					public void run() {
 						try {
 							processRequest(requestFinal);
-
 						} catch (Exception e) {
 							onError(requestFinal);
 							e.printStackTrace();
@@ -426,6 +425,7 @@ public class Spider implements Runnable, Task {
 	}
 
 	protected boolean processRequestExt(Request request) {
+	//	System.out.println(request.getUrl());
 		Page page = downloader.download(request, this);
 		if (page == null) {
 			return false;

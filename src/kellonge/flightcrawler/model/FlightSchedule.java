@@ -37,6 +37,8 @@ public class FlightSchedule {
 	private String WeekSchedule;
 	private int Flag;
 	private String RequestParam;
+	private String SpiderID;
+	private int NewFlag;
 
 	@Override
 	public String toString() {
@@ -302,6 +304,22 @@ public class FlightSchedule {
 			return false;
 		}
 		return true;
+	}
+
+	public String getSpiderID() {
+		return SpiderID;
+	}
+
+	public void setSpiderID(String spiderID) {
+		SpiderID = spiderID;
+	}
+
+	public int getNewFlag() {
+		return NewFlag;
+	}
+
+	public void setNewFlag(int newFlag) {
+		NewFlag = newFlag;
 	}
 
 }

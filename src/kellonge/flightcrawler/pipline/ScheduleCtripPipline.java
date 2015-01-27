@@ -36,7 +36,8 @@ public class ScheduleCtripPipline implements Pipeline {
 							.SubstractTime(flightSchedule.getDeptTime(),
 									flightSchedule.getArrTime()));
 					if (request != null) {
-
+						flightSchedule.setSpiderID(task.getSite()
+								.getDatabaseUUID());
 						flightSchedule.setRequestParam(String.format("url:%s",
 								request.getUrl()));
 					}

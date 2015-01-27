@@ -31,24 +31,24 @@
 		<!-- all cache file,result report etc. default is user.dir/data -->
 		<data-path></data-path>
 		<!-- spider thread num. default is 1 -->
-		<thread-num>20</thread-num>
+		<thread-num>1</thread-num>
 		<!-- one url max queue retry num. default is 1 -->
 		<cycle-retry-times>2</cycle-retry-times>
 		<!-- in one thread max interval between two request. default is 6000ms -->
 		<sleep-time>5000</sleep-time>
 		<!-- max time before request is terminate. default is 5000ms -->
-		<time-out>15000</time-out>
+		<time-out>10000</time-out>
 		<!-- use file urls.1: true 0:false default is 0 -->
 		<use-cached-queue>0</use-cached-queue>
 		<!-- use proxy.1: true 0:false default is 0 -->
-		<use-proxy>1</use-proxy>
+		<use-proxy>0</use-proxy>
 		<!-- when request is finsih spider restart 1:true 0:false default is 0 -->
-		<auto-restart>0</auto-restart>
+		<auto-restart>1</auto-restart>
 		<!-- spider which to start, can't empty or program can't start -->
-		<spider-name>PriceCtripSpider</spider-name>
+		<spider-name>ScheduleCtripSpider</spider-name>
 		<!-- proxy ip get address -->
 		<proxy-get-address>http://erwx.daili666.com/ip/?tid=559566142973866</proxy-get-address>
 		<!-- proxy retry time -->
-		<proxy-retry>5</proxy-retry>
+		<proxy-retry>1</proxy-retry>
 	</crawler-common>
 </root>
