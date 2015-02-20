@@ -263,8 +263,10 @@ public class ProxyPool {
 					+ p.getReuseTimeInterval() / 1000.0);
 			break;
 		case Proxy.ERROR_404:
-			// p.fail(Proxy.ERROR_404);
-			// p.setReuseTimeInterval(reuseInterval * p.getFailedNum());
+			p.fail(Proxy.ERROR_404);
+			p.setReuseTimeInterval(reuseInterval * p.getFailedNum());
+			logger.info(host + " >>>> reuseTimeInterval is >>>> "
+					+ p.getReuseTimeInterval() / 1000.0);
 			break;
 		default:
 			p.fail(statusCode);

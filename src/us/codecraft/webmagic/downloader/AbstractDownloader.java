@@ -47,9 +47,9 @@ public abstract class AbstractDownloader implements Downloader {
             page.addTargetRequest(request.setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, 1));
         } else {
             int cycleTriedTimes = (Integer) cycleTriedTimesObject;
-            if (!request.isFinsih()) {
+          
                 cycleTriedTimes++;
-			}
+ 
             if (cycleTriedTimes >= site.getCycleRetryTimes()) {
                 return null;
             }

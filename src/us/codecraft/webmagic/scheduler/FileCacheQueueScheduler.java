@@ -183,7 +183,8 @@ public class FileCacheQueueScheduler extends DuplicateRemovedScheduler
 			init(task);
 		}
 		fileCursorWriter.println(cursor.incrementAndGet());
-		return queue.poll();
+		Request request= queue.poll();
+		return request;
 	}
 
 	@Override

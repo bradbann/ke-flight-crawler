@@ -51,7 +51,7 @@ public class ScheduleCtripSpider {
 			// urls.add(new Request(
 			// "http://flights.ctrip.com/schedule/kmg.bjs.html"));
 
-			new FlightScheduleManager().updateFlightScheduleStatusBeforeFetch();
+
 			try {
 				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
 						+ "/flights.ctrip.com.urls.txt"));
@@ -82,6 +82,7 @@ public class ScheduleCtripSpider {
 				.setSpiderListeners(listeners)
 		// .addPipeline(new ConsolePipeline())
 		;
+		new FlightScheduleManager().updateFlightScheduleStatusBeforeFetch();
 		return flightCrawler;
 	}
 

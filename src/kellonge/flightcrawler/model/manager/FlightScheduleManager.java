@@ -30,7 +30,7 @@ public class FlightScheduleManager {
 			Session session = DataAccessObject.openSession();
 			session.beginTransaction();
 			Query query = session
-					.createQuery(" update FlightSchedule a  set a.NewFlag=1 where a.Flag=1 and a.NewFlag=0");
+					.createQuery(" update FlightSchedule a  set a.NewFlag=1 where a.Flag=1 and a.NewFlag!=3");
 			query.executeUpdate();
 			session.getTransaction().commit();
 		} catch (Exception e) {
@@ -47,7 +47,7 @@ public class FlightScheduleManager {
 			Session session = DataAccessObject.openSession();
 			session.beginTransaction();
 			Query query = session
-					.createQuery(" update FlightSchedule a  set a.NewFlag=3 where  a.Flag=1 and  a.NewFlag!=2 ");
+					.createQuery(" update FlightSchedule a  set a.NewFlag=3 where  a.Flag=1 and  a.NewFlag=1 ");
 			query.executeUpdate(); 
 			query = session
 					.createQuery(" update FlightSchedule a  set a.NewFlag=0 where a.Flag=1 and  a.NewFlag=2 ");
