@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import kellonge.flightcrawler.model.City;
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.utils.DataAccessObject;
 import kellonge.flightcrawler.utils.DateTimeUtils;
@@ -48,12 +49,12 @@ public class FlightScheduleManager {
 			session.beginTransaction();
 			Query query = session
 					.createQuery(" update FlightSchedule a  set a.NewFlag=3 where  a.Flag=1 and  a.NewFlag=1 ");
-			query.executeUpdate(); 
+			query.executeUpdate();
 			query = session
 					.createQuery(" update FlightSchedule a  set a.NewFlag=0 where a.Flag=1 and  a.NewFlag=2 ");
 			query.executeUpdate();
 			session.getTransaction().commit();
-			
+
 		} catch (Exception e) {
 			logger.info("updateFlightScheduleStatusBeforeFetch"
 					+ e.getMessage());
@@ -133,13 +134,22 @@ public class FlightScheduleManager {
 	}
 
 	public FlightSchedule getFlightScheduleByParam(String strFlightNo,
-			Date flightDate) {
+			String strDeptCityCode, String strArrCityCode, Date flightDate) {
 		List<FlightSchedule> flightSchedules = getFlightSchedules(strFlightNo,
 				"", "", "");
 		for (FlightSchedule flightSchedule : flightSchedules) {
-			if (IsTodayFlight(flightSchedule, flightDate)) {
-				return flightSchedule;
+			City deptCity = new CityManager().getCityByName(flightSchedule
+					.getDeptCityName());
+			City arrCity = new CityManager().getCityByName(flightSchedule
+					.getArrCityName());
+			if (deptCity != null && arrCity != null
+					&& flightSchedule.getDeptCityID() == deptCity.getID()
+					&& flightSchedule.getArrCityID() == arrCity.getID()) {
+				if (IsTodayFlight(flightSchedule, flightDate)) {
+					return flightSchedule;
+				}
 			}
+
 		}
 		return null;
 	}

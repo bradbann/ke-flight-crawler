@@ -7,6 +7,7 @@ import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import us.codecraft.webmagic.downloader.AbstractDownloader;
 import us.codecraft.webmagic.downloader.Downloader;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.pipeline.CollectorPipeline;
@@ -425,7 +426,7 @@ public class Spider implements Runnable, Task {
 	}
 
 	protected boolean processRequestExt(Request request) {
-	//	System.out.println(request.getUrl());
+		// System.out.println(request.getUrl());
 		Page page = downloader.download(request, this);
 		if (page == null) {
 			return false;
@@ -440,12 +441,19 @@ public class Spider implements Runnable, Task {
 		if (!request.isFinsih()) {
 			processRequestExt(request);
 		}
+		// for cycle retry
+		if (page.isPageBizError()  ) {
+			AbstractDownloader a = (AbstractDownloader) downloader;
+			page = a.addToCycleRetry(request, site);
+			if (page == null) {
+				return false;
+			}
+			extractAndAddRequests(page, true);
+			return true;
+		}
 		extractAndAddRequests(page, spawnUrl);
 		// for proxy status management
 		request.putExtra(Request.STATUS_CODE, page.getStatusCode());
-		if (page.isPageBizError()) {
-			return false;
-		}
 		if (!page.getResultItems().isSkip()) {
 			for (Pipeline pipeline : pipelines) {
 				pipeline.process(page.getResultItems(), this);

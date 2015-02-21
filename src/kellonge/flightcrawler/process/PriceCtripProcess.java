@@ -20,6 +20,7 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.proxy.Proxy;
 import us.codecraft.webmagic.proxy.ProxyPool;
 
 public class PriceCtripProcess implements PageProcessor {
@@ -32,7 +33,7 @@ public class PriceCtripProcess implements PageProcessor {
 			proxyPool.validateWhenInit(true);
 			proxyPool.setWebGet(true);
 			proxyPool
-					.setMinProxy((int)Math.round(Configuration.getThreadNum() * 1.2));
+					.setMinProxy((int) Math.round(Configuration.getThreadNum() * 1.2));
 			proxyPool.addProxy(httpProxyList.toArray(new String[httpProxyList
 					.size()][]));
 			proxyPool.checkAndGetProxyFromWeb();
@@ -49,25 +50,7 @@ public class PriceCtripProcess implements PageProcessor {
 
 	@Override
 	public void process(Page page) {
-		if (page.getUrl().regex("flights.ctrip.com/booking").match()) {
-			Page multiRequestPage = (Page) page;
-			String rand = page.getHtml().regex("ajaxRequest\\(url.*\'\\);")
-					.regex("\\d\\.\\d+").get();
-			String url = page
-					.getHtml()
-					.regex("http://flights.ctrip.com/domesticsearch/search/SearchFirstRouteFlights.*CK=[0-9A-z]+")
-					.get();
-			url += "&r=" + rand;
-			page.getRequest().setUrl(url);
-			page.getRequest().setFinsih(false);
-			Map<String, String> heads = page.getRequest().getRequestHeads();
-			if (heads == null) {
-				heads = new HashMap<String, String>();
-			}
-			heads.put("Referer", page.getRequest().getInitUrl());
-			page.getRequest().setRequestHeads(heads);
-		} else {
-			page.getRequest().setFinsih(true);
+		try {
 			JSONObject jsonObject = JSONObject.parseObject(page.getRawText());
 			JSONArray flightJosnArray = jsonObject.getJSONArray("fis");
 			List<FlightInfo> flightInfos = new ArrayList<FlightInfo>();
@@ -117,16 +100,19 @@ public class PriceCtripProcess implements PageProcessor {
 					flightInfos.add(flightInfo);
 				}
 			}
-
 			if (flightInfos.size() == 0) {
 				page.setPageBizError(true);
-				page.setSkip(true);
+				page.setStatusCode(Proxy.ERROR_BANNED);
 			} else {
 				page.putField("ModelData", flightInfos);
 				page.putField("Request", page.getRequest());
 				page.getRequest().putExtra(Request.BIZSUCCESS, 1);
 			}
+		} catch (Exception e) {
+			page.setPageBizError(true);
+			page.setStatusCode(Proxy.ERROR_BANNED);
 		}
+
 	}
 
 	@Override

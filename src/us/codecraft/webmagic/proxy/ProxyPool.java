@@ -276,6 +276,9 @@ public class ProxyPool {
 		if (p.getFailedNum() > Configuration.getProxyPoolItemRetry()) {
 			p.setReuseTimeInterval(reviveTime);
 			allProxy.remove(p.getHttpHost().getAddress().getHostAddress());
+			if (proxyQueue.contains(p)) {
+				proxyQueue.remove(p);
+			}
 			if (isWebGet) {
 				checkAndGetProxyFromWeb();
 			}
@@ -297,7 +300,8 @@ public class ProxyPool {
 		// }
 		// }
 		try {
-			if (!proxyQueue.contains(p)) {
+			if (!proxyQueue.contains(p)
+					&& allProxy.containsKey(host.getAddress().getHostAddress())) {
 				proxyQueue.put(p);
 			}
 		} catch (InterruptedException e) {

@@ -44,20 +44,30 @@ public class AirportManager {
 		return null;
 	}
 
+	public Airport getAirportByCode(String code) {
+		List<Airport> airports = getAirports();
+		for (Airport airport : airports) {
+			if (airport.getCode().equals(code)) {
+				return airport;
+			}
+		}
+		return null;
+	}
+
 	public List<Airport> getAirports() {
-		if (airports == null) { 
+		if (airports == null) {
 			try {
 				Query query = getAirportsQuery("a");
 				airports = query.list();
 				for (Airport airport : airports) {
 					extendAirport(airport);
-				} 
+				}
 			} catch (Exception e) {
 				logger.info("getAirports" + e.getMessage());
 			} finally {
 				DataAccessObject.closeSession();
 			}
-		} 
+		}
 
 		return airports;
 	}

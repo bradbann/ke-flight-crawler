@@ -9,8 +9,8 @@ import kellonge.flightcrawler.utils.Utility;
 
 public class ModelTest {
 	public static void main(String[] args) {
-		FlightSchedule flightSchedule = new FlightScheduleManager()
-				.getFlightScheduleByParam("CA4142 ", Utility.toSafeDateTime("2015-1-21"));
-		System.out.println(flightSchedule);
+////		FlightSchedule flightSchedule = new FlightScheduleManager()
+////				.getFlightScheduleByParam("CA4142 ", Utility.toSafeDateTime("2015-1-21"));
+//		System.out.println(flightSchedule);
 	}
 }

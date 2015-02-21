@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import kellonge.flightcrawler.model.FlightInfo;
 import kellonge.flightcrawler.model.FlightPrice;
 import kellonge.flightcrawler.model.FlightSchedule;
+import kellonge.flightcrawler.model.manager.AirportManager;
 import kellonge.flightcrawler.model.manager.FlightInfoManager;
 import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import us.codecraft.webmagic.Request;
@@ -28,29 +29,33 @@ public class PriceCtripPipline implements Pipeline {
 				for (FlightInfo flightInfo : modelData) {
 					FlightSchedule flightSchedule = new FlightScheduleManager()
 							.getFlightScheduleByParam(flightInfo.getFlightNo(),
+									flightInfo.getDeptCityCode(),
+									flightInfo.getArrCityCode(),
 									flightInfo.getFlightDate());
 					if (flightSchedule != null) {
 						flightInfo.setFlightScheduleID(flightSchedule.getID());
-					}
-					if (request != null) {
-						flightInfo.setRequestParam(String.format("url:%s",
-								request.getUrl()));
-					}
-					new FlightInfoManager().saveFlightInfo(flightInfo);
-					String minPriceID = "";
-					BigDecimal minPrice = new BigDecimal(1000000);
-					for (FlightPrice flightPrice : flightInfo.getFlightPrices()) {
-						flightPrice.setFlightInfoID(flightInfo.getID());
-					//	new FlightPriceManager().saveFlightPrice(flightPrice);
-						if (flightPrice.getPrice().compareTo(minPrice) < 0) {
-							minPriceID = flightInfo.getID();
-							minPrice = flightPrice.getPrice();
+						if (request != null) {
+							flightInfo.setRequestParam(String.format("url:%s",
+									request.getUrl()));
 						}
-					}
-					if (StringUtils.isNotEmpty(minPriceID)) {
-						flightInfo.setLowPrice(minPrice);
-						flightInfo.setPriceID(minPriceID);
 						new FlightInfoManager().saveFlightInfo(flightInfo);
+						String minPriceID = "";
+						BigDecimal minPrice = new BigDecimal(1000000);
+						for (FlightPrice flightPrice : flightInfo
+								.getFlightPrices()) {
+							flightPrice.setFlightInfoID(flightInfo.getID());
+							// new
+							// FlightPriceManager().saveFlightPrice(flightPrice);
+							if (flightPrice.getPrice().compareTo(minPrice) < 0) {
+								minPriceID = flightInfo.getID();
+								minPrice = flightPrice.getPrice();
+							}
+						}
+						if (StringUtils.isNotEmpty(minPriceID)) {
+							flightInfo.setLowPrice(minPrice);
+							flightInfo.setPriceID(minPriceID);
+							new FlightInfoManager().saveFlightInfo(flightInfo);
+						}
 					}
 
 				}

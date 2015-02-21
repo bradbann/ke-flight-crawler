@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import kellonge.flightcrawler.config.Configuration;
@@ -55,16 +57,28 @@ public class PriceCtripSpider {
 							DateTimeUtils.addDay(now, DayAhead))) {
 						DayAhead++;
 					}
-
-					Request request = new Request(
-							String.format(
-									"http://flights.ctrip.com/booking/%s-%s-day-%s.html",
+					String referer = String
+							.format("http://flights.ctrip.com/booking/%s-%s-day-%s.html",
 									new CityManager().getCityByName(
 											flightSchedule.getDeptCityName())
 											.getCityCode1(),
 									new CityManager().getCityByName(
 											flightSchedule.getArrCityName())
-											.getCityCode1(), DayAhead));
+											.getCityCode1(), DayAhead);
+					String url = String
+							.format("http://flights.ctrip.com/domesticsearch/search/SearchFirstRouteFlights?DCity1=%s&ACity1=%s&SearchType=S&DDate1=%s",
+									new CityManager().getCityByName(
+											flightSchedule.getDeptCityName())
+											.getCityCode1(),
+									new CityManager().getCityByName(
+											flightSchedule.getArrCityName())
+											.getCityCode1(), DateTimeUtils
+											.format(DateTimeUtils.addDay(now,
+													DayAhead), "yyyy-MM-dd"));
+					Request request = new Request(url);
+					Map<String, String> heads = new HashMap<String, String>();
+					heads.put("Referer", referer);
+					request.setRequestHeads(heads);
 					urls.add(request);
 				}
 			}
