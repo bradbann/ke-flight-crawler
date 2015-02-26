@@ -19,10 +19,12 @@ public class Request implements Serializable {
 
 	public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
 	public static final String STATUS_CODE = "statusCode";
+	public static final String STATUS_ENUM = "statusEnum";
+	public static final String STATUS_MSG = "statusMsg";
 	public static final String PROXY = "proxy";
-	public static final String BIZSUCCESS = "bizSuccess";
 
 	private Map<String, String> requestHeads;
+
 	private boolean isFinsih = true;
 
 	private String initUrl;
@@ -30,7 +32,6 @@ public class Request implements Serializable {
 	private String url;
 
 	private String method;
-
 	/**
 	 * Store additional information in extras.
 	 */
@@ -45,9 +46,11 @@ public class Request implements Serializable {
 	private long priority;
 
 	public Request() {
+		putExtra(STATUS_ENUM, RequestStatus.Init);
 	}
 
 	public Request(String url) {
+		putExtra(STATUS_ENUM, RequestStatus.Init);
 		this.url = url;
 		this.initUrl = url;
 	}
@@ -166,4 +169,20 @@ public class Request implements Serializable {
 	public void setFinsih(boolean isFinsih) {
 		this.isFinsih = isFinsih;
 	}
+
+	public enum RequestStatus {
+		Init, Processing, Success, Fail_Download, Fail_Blocking, Fail_MaxRetry, Fail_BizError, Fail_Unknown
+	}
+
+	// public boolean CheckRequestStatusCanContinue(Request request) {
+	// RequestStatus status = (RequestStatus) request
+	// .getExtra(Request.STATUS_ENUM);
+	// if (status == RequestStatus.Fail_BizError
+	// || status == RequestStatus.Fail_Unknown) {
+	// return false;
+	// } else {
+	// return true;
+	// }
+	// }
+
 }

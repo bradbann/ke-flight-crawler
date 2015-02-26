@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import kellonge.flightcrawler.model.FlightInfo;
-import kellonge.flightcrawler.model.FlightPrice;
+import kellonge.flightcrawler.model.FlightInfo; 
 import kellonge.flightcrawler.model.FlightSchedule;
 import kellonge.flightcrawler.model.manager.AirportManager;
 import kellonge.flightcrawler.model.manager.FlightInfoManager;
@@ -34,30 +33,8 @@ public class PriceCtripPipline implements Pipeline {
 									flightInfo.getFlightDate());
 					if (flightSchedule != null) {
 						flightInfo.setFlightScheduleID(flightSchedule.getID());
-						if (request != null) {
-							flightInfo.setRequestParam(String.format("url:%s",
-									request.getUrl()));
-						}
 						new FlightInfoManager().saveFlightInfo(flightInfo);
-						String minPriceID = "";
-						BigDecimal minPrice = new BigDecimal(1000000);
-						for (FlightPrice flightPrice : flightInfo
-								.getFlightPrices()) {
-							flightPrice.setFlightInfoID(flightInfo.getID());
-							// new
-							// FlightPriceManager().saveFlightPrice(flightPrice);
-							if (flightPrice.getPrice().compareTo(minPrice) < 0) {
-								minPriceID = flightInfo.getID();
-								minPrice = flightPrice.getPrice();
-							}
-						}
-						if (StringUtils.isNotEmpty(minPriceID)) {
-							flightInfo.setLowPrice(minPrice);
-							flightInfo.setPriceID(minPriceID);
-							new FlightInfoManager().saveFlightInfo(flightInfo);
-						}
 					}
-
 				}
 			}
 		} catch (Exception e) {

@@ -19,6 +19,7 @@ import kellonge.flightcrawler.utils.DateTimeUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.Request.RequestStatus;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.proxy.ProxyPool;
 import us.codecraft.webmagic.selector.Selectable;
@@ -76,8 +77,9 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 			flight.setAirLineName(schedule.xpath(
 					"//*[@class='flight_logo']/a/strong/@data-description")
 					.get());
-			flight.setFlightNo(schedule.xpath(
-					"//*[@class='flight_logo']/a/strong/text()").get());
+			flight.setFlightNo(schedule
+					.xpath("//*[@class='flight_logo']/a/strong/text()").get()
+					.trim());
 			flight.setPlanModel(schedule.xpath(
 					"//*[@data-defer='fltTypeJmp']/@code").get());
 			flight.setDeptAirportName(schedule
@@ -123,7 +125,8 @@ public class ScheduleCtripPageProcess implements PageProcessor {
 		} else {
 			page.putField("ModelData", flightList);
 			page.putField("Request", page.getRequest());
-			page.getRequest().putExtra(Request.BIZSUCCESS, 1);
+			page.getRequest().getExtras()
+					.put(Request.STATUS_ENUM, RequestStatus.Success);
 		}
 		// 分页
 		for (Selectable links : page.getHtml()

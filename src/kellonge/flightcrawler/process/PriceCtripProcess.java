@@ -14,10 +14,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import kellonge.flightcrawler.config.Configuration;
 import kellonge.flightcrawler.model.FlightInfo;
-import kellonge.flightcrawler.model.FlightPrice;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
+import us.codecraft.webmagic.Request.RequestStatus;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.proxy.Proxy;
@@ -50,9 +50,15 @@ public class PriceCtripProcess implements PageProcessor {
 
 	@Override
 	public void process(Page page) {
+		String errorMsg = "";
 		try {
 			JSONObject jsonObject = JSONObject.parseObject(page.getRawText());
 			JSONArray flightJosnArray = jsonObject.getJSONArray("fis");
+			JSONObject error = jsonObject.getJSONObject("Error");
+			if (error != null) {
+				errorMsg = String.format("Code:%s Msg:%s",
+						error.getString("Code"), error.getString("Message"));
+			}
 			List<FlightInfo> flightInfos = new ArrayList<FlightInfo>();
 			if (flightJosnArray != null) {
 				for (int i = 0; i < flightJosnArray.size(); i++) {
@@ -79,38 +85,44 @@ public class PriceCtripProcess implements PageProcessor {
 					flightInfo.setArrAirportCode(flightJson.getString("apc"));
 					flightInfo.setDeptAirportCode(flightJson.getString("dpc"));
 					flightInfo.setDataSource("CTRIP");
-					flightInfo.setFlag(1);
 					flightInfo.setFlightNo(flightJson.getString("fn"));
 					flightInfo.setPlanModel(flightJson.getJSONObject("cf")
 							.getString("c"));
 					flightInfo.setPunctualityRate(flightJson.getFloat("pr"));
 					JSONArray flightPriceJsonArray = flightJson
 							.getJSONArray("scs");
-					List<FlightPrice> flightPrices = new ArrayList<FlightPrice>();
+
+					BigDecimal minPrice = new BigDecimal(1000000);
 					for (int j = 0; j < flightPriceJsonArray.size(); j++) {
 						JSONObject flightPriceJson = flightPriceJsonArray
 								.getJSONObject(j);
-						FlightPrice flightPrice = new FlightPrice();
-						flightPrice.setPrice(BigDecimal.valueOf(flightPriceJson
-								.getDouble("p")));
-						flightPrice.setCabin1(flightPriceJson.getString("c"));
-						flightPrices.add(flightPrice);
+						BigDecimal price = BigDecimal.valueOf(flightPriceJson
+								.getDouble("p"));
+						if (price.compareTo(minPrice) < 0) {
+							minPrice = price;
+						}
+
 					}
-					flightInfo.setFlightPrices(flightPrices);
+					flightInfo.setLowPrice(minPrice);
 					flightInfos.add(flightInfo);
 				}
 			}
 			if (flightInfos.size() == 0) {
-				page.setPageBizError(true);
-				page.setStatusCode(Proxy.ERROR_BANNED);
+				page.setNeedCycleRetry(true);
+				page.getRequest().getExtras()
+						.put(Request.STATUS_ENUM, RequestStatus.Fail_BizError);
+				page.getRequest().putExtra(Request.STATUS_MSG, errorMsg);
 			} else {
 				page.putField("ModelData", flightInfos);
 				page.putField("Request", page.getRequest());
-				page.getRequest().putExtra(Request.BIZSUCCESS, 1);
+				page.getRequest().getExtras()
+						.put(Request.STATUS_ENUM, RequestStatus.Success);
 			}
 		} catch (Exception e) {
-			page.setPageBizError(true);
-			page.setStatusCode(Proxy.ERROR_BANNED);
+			page.setNeedCycleRetry(true);
+			page.getRequest().putExtra(Request.STATUS_ENUM,
+					RequestStatus.Fail_Unknown);
+			page.getRequest().putExtra(Request.STATUS_MSG, errorMsg);
 		}
 
 	}

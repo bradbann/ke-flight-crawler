@@ -33,22 +33,31 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 import us.codecraft.webmagic.scheduler.MonitorableScheduler;
 
-public class PriceCtripSpider {
+public class PriceLeftCtripSpider {
 
-	private static Logger logger = Logger.getLogger(PriceCtripSpider.class);
+	private static Logger logger = Logger.getLogger(PriceLeftCtripSpider.class);
 	private static Spider flightCrawler = null;
 
 	private static List<Request> getSpiderRequest() {
 		List<Request> urls = new ArrayList<Request>();
+		int[] DayAheadIneterval = new int[] { 2, 4, 8, 16, 32 };
 		if (!Configuration.isUseCachedQueue()) {
 			List<FlightSchedule> flightSchedules = new FlightScheduleManager()
-					.getFlightSchedules("", "", "", "");
+				.getNoPriceFlightSchedules();
 			for (FlightSchedule flightSchedule : flightSchedules) {
 				Date now = new Date();
-				for (int i = 1; i <= Configuration.getAHeadDay(); i++) {
+
+				int DayAhead = 1;
+				for (int i = 0; i <= DayAheadIneterval.length; i++) {
+					if (i > 0) {
+						DayAhead = DayAhead + DayAheadIneterval[i - 1];
+					}
 					while (!FlightScheduleManager.IsTodayFlight(flightSchedule,
-							DateTimeUtils.addDay(now, i))) {
-						i++;
+							DateTimeUtils.addDay(now, DayAhead))) {
+						DayAhead++;
+					}
+					if (DayAhead>60) {
+						break;
 					}
 					String referer = "1";
 					String url = String
@@ -59,9 +68,8 @@ public class PriceCtripSpider {
 									new CityManager().getCityByName(
 											flightSchedule.getArrCityName())
 											.getCityCode1(), DateTimeUtils
-											.format(DateTimeUtils
-													.addDay(now, i),
-													"yyyy-MM-dd"));
+											.format(DateTimeUtils.addDay(now,
+													DayAhead), "yyyy-MM-dd"));
 					Request request = new Request(url);
 					Map<String, String> heads = new HashMap<String, String>();
 					heads.put("Referer", referer);
@@ -121,7 +129,7 @@ public class PriceCtripSpider {
 				public void run() {
 					System.exit(0);
 				}
-			}, 1000 * 10);
+			}, 1000*10);
 		}
 	};
 

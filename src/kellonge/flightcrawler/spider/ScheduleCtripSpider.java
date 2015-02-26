@@ -14,6 +14,7 @@ import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import kellonge.flightcrawler.pipline.ScheduleCtripPipline;
 import kellonge.flightcrawler.process.ScheduleCtripPageProcess;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
+import kellonge.flightcrawler.utils.SpiderStatusMonitor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +29,6 @@ public class ScheduleCtripSpider {
 
 	private static Logger logger = Logger.getLogger(ScheduleCtripSpider.class);
 	private static Spider flightCrawler = null;
-
-	private static AtomicLong successCnt = new AtomicLong(0);
-	private static AtomicLong errorCnt = new AtomicLong(0);
 
 	private static List<Request> getSpiderRequest() {
 		List<City> citys = new CityManager().getCitys();
@@ -51,7 +49,6 @@ public class ScheduleCtripSpider {
 			// urls.add(new Request(
 			// "http://flights.ctrip.com/schedule/kmg.bjs.html"));
 
-
 			try {
 				Files.deleteIfExists(Paths.get(Configuration.getDataPath()
 						+ "/flights.ctrip.com.urls.txt"));
@@ -71,6 +68,8 @@ public class ScheduleCtripSpider {
 		List<SpiderListener> listeners = new ArrayList<SpiderListener>();
 		listeners.add(listener);
 		flightCrawler = Spider.create(new ScheduleCtripPageProcess());
+		SpiderStatusMonitor spiderStatusMonitor = new SpiderStatusMonitor(
+				flightCrawler);
 		flightCrawler
 				.setExitWhenComplete(true)
 				.setUUID("flights.ctrip.com")
@@ -79,10 +78,11 @@ public class ScheduleCtripSpider {
 				.setScheduler(
 						new FileCacheQueueScheduler(Configuration.getDataPath()))
 				.addPipeline(new ScheduleCtripPipline())
-				.setSpiderListeners(listeners)
-		// .addPipeline(new ConsolePipeline())
-		;
-		new FlightScheduleManager().updateFlightScheduleStatusBeforeFetch();
+				.addSpiderListener(listener);
+		if (!Configuration.isUseCachedQueue()) {
+
+			new FlightScheduleManager().updateFlightScheduleStatusBeforeFetch();
+		}
 		return flightCrawler;
 	}
 
@@ -90,30 +90,21 @@ public class ScheduleCtripSpider {
 
 		@Override
 		public void onSuccess(Request request) {
-			logger.info("[success] url:" + request.getInitUrl());
-			if (request.getExtra(Request.BIZSUCCESS) != null
-					&& request.getExtra(Request.BIZSUCCESS).equals(1)) {
-				successCnt.getAndIncrement();
-			}
-			System.out.println(getSipderStatus());
 		}
 
 		@Override
 		public void onError(Request request) {
-			errorCnt.getAndIncrement();
 			ErrorUrlWriter.Print(request.getInitUrl());
-			logger.info("[error] url:" + request.getInitUrl() + "\n");
-			System.out.println(getSipderStatus());
 
 		}
 
 		@Override
 		public void onFinish(Spider spider) {
-			logger.info("all request has finish.");
-			new FlightScheduleManager().updateFlightScheduleStatusAfterFetch();
+			if (!Configuration.isUseCachedQueue()) {
+				new FlightScheduleManager()
+						.updateFlightScheduleStatusBeforeFetch();
+			}
 			if (Configuration.isAutoRestart()) {
-				errorCnt.set(0);
-				successCnt.set(0);
 				flightCrawler = null;
 				flightCrawler = GetSpider();
 				flightCrawler.start();
@@ -121,18 +112,4 @@ public class ScheduleCtripSpider {
 		}
 	};
 
-	private static String getSipderStatus() {
-		String str = "";
-		MonitorableScheduler monitorableScheduler = (MonitorableScheduler) flightCrawler
-				.getScheduler();
-		str += "totalQueue:"
-				+ monitorableScheduler.getTotalRequestsCount(flightCrawler);
-		str += " leftQueue:"
-				+ monitorableScheduler.getLeftRequestsCount(flightCrawler);
-		str += " totalRequest:" + flightCrawler.getPageCount();
-		str += " error:" + errorCnt.get();
-		str += " success:" + successCnt.get();
-
-		return str;
-	}
 }

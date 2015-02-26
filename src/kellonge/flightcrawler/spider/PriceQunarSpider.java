@@ -20,6 +20,7 @@ import kellonge.flightcrawler.model.manager.FlightInfoManager;
 import kellonge.flightcrawler.model.manager.FlightScheduleManager;
 import kellonge.flightcrawler.pipline.PriceCtripPipline;
 import kellonge.flightcrawler.process.PriceCtripProcess;
+import kellonge.flightcrawler.process.PriceQunarProcess;
 import kellonge.flightcrawler.utils.DateTimeUtils;
 import kellonge.flightcrawler.utils.ErrorUrlWriter;
 import kellonge.flightcrawler.utils.SpiderStatusMonitor;
@@ -33,38 +34,42 @@ import us.codecraft.webmagic.pipeline.ConsolePipeline;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 import us.codecraft.webmagic.scheduler.MonitorableScheduler;
 
-public class PriceCtripSpider {
+public class PriceQunarSpider {
 
-	private static Logger logger = Logger.getLogger(PriceCtripSpider.class);
+	private static Logger logger = Logger.getLogger(PriceQunarSpider.class);
 	private static Spider flightCrawler = null;
 
 	private static List<Request> getSpiderRequest() {
 		List<Request> urls = new ArrayList<Request>();
+		int[] DayAheadIneterval = new int[] { 2, 4, 8, 16, 32 };
 		if (!Configuration.isUseCachedQueue()) {
 			List<FlightSchedule> flightSchedules = new FlightScheduleManager()
 					.getFlightSchedules("", "", "", "");
+			flightSchedules = flightSchedules.subList(0, 100);
 			for (FlightSchedule flightSchedule : flightSchedules) {
 				Date now = new Date();
-				for (int i = 1; i <= Configuration.getAHeadDay(); i++) {
-					while (!FlightScheduleManager.IsTodayFlight(flightSchedule,
-							DateTimeUtils.addDay(now, i))) {
-						i++;
+
+				int DayAhead = 1;
+				for (int i = 0; i <= DayAheadIneterval.length; i++) {
+					if (i > 0) {
+						DayAhead = DayAhead + DayAheadIneterval[i - 1];
 					}
-					String referer = "1";
+					while (!FlightScheduleManager.IsTodayFlight(flightSchedule,
+							DateTimeUtils.addDay(now, DayAhead))) {
+						DayAhead++;
+					}
+					if (DayAhead > 60) {
+						break;
+					}
 					String url = String
-							.format("http://flights.ctrip.com/domesticsearch/search/SearchFirstRouteFlights?DCity1=%s&ACity1=%s&SearchType=S&DDate1=%s",
-									new CityManager().getCityByName(
-											flightSchedule.getDeptCityName())
-											.getCityCode1(),
-									new CityManager().getCityByName(
-											flightSchedule.getArrCityName())
-											.getCityCode1(), DateTimeUtils
-											.format(DateTimeUtils
-													.addDay(now, i),
-													"yyyy-MM-dd"));
+							.format("http://flight.qunar.com/twell/longwell?&http://www.travelco.com/searchArrivalAirport=%s&http://www.travelco.com/searchDepartureAirport=%s&http://www.travelco.com/searchDepartureTime=%s&locale=zh&nextNDays=0&searchLangs=zh&searchType=OneWayFlight&tags=1&mergeFlag=0",
+									flightSchedule.getDeptCityName(),
+									flightSchedule.getArrCityName(),
+									DateTimeUtils.format(
+											DateTimeUtils.addDay(now, DayAhead),
+											"yyyy-MM-dd"));
 					Request request = new Request(url);
 					Map<String, String> heads = new HashMap<String, String>();
-					heads.put("Referer", referer);
 					request.setRequestHeads(heads);
 					urls.add(request);
 				}
@@ -86,7 +91,7 @@ public class PriceCtripSpider {
 
 	public static Spider GetSpider() {
 		List<Request> urls = getSpiderRequest();
-		flightCrawler = Spider.create(new PriceCtripProcess());
+		flightCrawler = Spider.create(new PriceQunarProcess());
 		SpiderStatusMonitor spiderStatusMonitor = new SpiderStatusMonitor(
 				flightCrawler);
 		flightCrawler
@@ -96,7 +101,6 @@ public class PriceCtripSpider {
 				.addRequest(urls.toArray(new Request[urls.size()]))
 				.setScheduler(
 						new FileCacheQueueScheduler(Configuration.getDataPath()))
-				.addPipeline(new PriceCtripPipline())
 				.addSpiderListener(listener);
 		return flightCrawler;
 	}

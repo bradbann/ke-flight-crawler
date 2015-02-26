@@ -9,7 +9,7 @@ import kellonge.flightcrawler.utils.DateTimeUtils;
 
 public class FlightInfo {
 
-	private String ID;
+	private int ID;
 	private String AirLineName;
 	private int AirLineID;
 	private String DeptAirportName;
@@ -32,26 +32,21 @@ public class FlightInfo {
 	private String DeptTerminal;
 	private boolean IsStopOver;
 	private BigDecimal LowPrice;
-	private String PriceID;
 	private int AheadDay;
-	private int Flag;
 	private String AirLineCode;
 	private String ArrCityCode;
 	private String DeptCityCode;
 	private String ArrAirportCode;
 	private String DeptAirportCode;
 	private float PunctualityRate;
-	private boolean IsFood;
 	private BigDecimal AdditionalFee;
-	private List<FlightPrice> FlightPrices;
 	private String FlightScheduleID;
-	private String RequestParam;
 
-	public String getID() {
+	public int getID() {
 		return ID;
 	}
 
-	public void setID(String iD) {
+	public void setID(int iD) {
 		ID = iD;
 	}
 
@@ -183,14 +178,6 @@ public class FlightInfo {
 		CreateDate = createDate;
 	}
 
-	public int getFlag() {
-		return Flag;
-	}
-
-	public void setFlag(int flag) {
-		Flag = flag;
-	}
-
 	public String getDataSource() {
 		return DataSource;
 	}
@@ -239,14 +226,6 @@ public class FlightInfo {
 		LowPrice = lowPrice;
 	}
 
-	public String getPriceID() {
-		return PriceID;
-	}
-
-	public void setPriceID(String priceID) {
-		PriceID = priceID;
-	}
-
 	public int getAheadDay() {
 		return AheadDay;
 	}
@@ -271,28 +250,12 @@ public class FlightInfo {
 		PunctualityRate = punctualityRate;
 	}
 
-	public boolean isIsFood() {
-		return IsFood;
-	}
-
-	public void setIsFood(boolean isFood) {
-		IsFood = isFood;
-	}
-
 	public BigDecimal getAdditionalFee() {
 		return AdditionalFee;
 	}
 
 	public void setAdditionalFee(BigDecimal additionalFee) {
 		AdditionalFee = additionalFee;
-	}
-
-	public List<FlightPrice> getFlightPrices() {
-		return FlightPrices;
-	}
-
-	public void setFlightPrices(List<FlightPrice> flightPrices) {
-		FlightPrices = flightPrices;
 	}
 
 	public String getDeptCityCode() {
@@ -333,14 +296,6 @@ public class FlightInfo {
 
 	public void setFlightScheduleID(String flightScheduleID) {
 		FlightScheduleID = flightScheduleID;
-	}
-
-	public String getRequestParam() {
-		return RequestParam;
-	}
-
-	public void setRequestParam(String requestParam) {
-		RequestParam = requestParam;
 	}
 
 }

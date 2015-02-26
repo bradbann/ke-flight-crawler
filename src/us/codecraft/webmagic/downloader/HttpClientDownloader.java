@@ -1,6 +1,7 @@
 package us.codecraft.webmagic.downloader;
 
 import com.google.common.collect.Sets;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
@@ -20,10 +21,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Task;
+import us.codecraft.webmagic.Request.RequestStatus;
 import us.codecraft.webmagic.selector.PlainText;
 import us.codecraft.webmagic.utils.HttpConstant;
 import us.codecraft.webmagic.utils.UrlUtils;
@@ -153,13 +156,9 @@ public class HttpClientDownloader extends AbstractDownloader {
 				.setCookieSpec(CookieSpecs.BEST_MATCH);
 		if (site.getHttpProxyPool() != null
 				&& site.getHttpProxyPool().isEnable()) {
-			Object host = request.getExtra(Request.PROXY);
-			if (host == null) {
-				host = site.getHttpProxyFromPool();
-			}
-			HttpHost host1 = (HttpHost) host;
-			requestConfigBuilder.setProxy(host1);
-			request.putExtra(Request.PROXY, host1);
+			HttpHost host = site.getHttpProxyFromPool();
+			requestConfigBuilder.setProxy(host);
+			request.putExtra(Request.PROXY, host);
 		}
 		requestBuilder.setConfig(requestConfigBuilder.build());
 		return requestBuilder.build();

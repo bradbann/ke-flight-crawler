@@ -17,13 +17,67 @@ public class FlightInfoManager {
 
 	DataAccessObject dao = new DataAccessObject();
 	Logger logger = Logger.getLogger(this.getClass());
- 
 
 	public FlightInfoManager() {
 	}
 
-	public void saveFlightInfo(FlightInfo flightInfo) { 
-		try { 
+	public void updateFlightInfoReferenceByParam(String newFlightScheduleID,
+			String newWeekSchedule, String oldFlightScheduleID) {
+		String[] arrWeekSchedules = newWeekSchedule.split(",");
+		if (arrWeekSchedules.length == 7) {
+			String where = " FlightScheduleID  IN (" + oldFlightScheduleID
+					+ ") AND(   ";
+			boolean isFirst = true;
+			for (int i = 0; i < arrWeekSchedules.length; i++) {
+				if (arrWeekSchedules[i].equals("1")) {
+					if (i <= 5) {
+						if (isFirst) {
+							where += "    DAYOFWEEK(FlightDate)= " + (i + 2);
+							isFirst = false;
+						} else {
+							where += " or  DAYOFWEEK(FlightDate)= " + (i + 2);
+						}
+
+					} else {
+						if (isFirst) {
+							where += "    DAYOFWEEK(FlightDate)= " + 1;
+							isFirst = false;
+						} else {
+							where += " or  DAYOFWEEK(FlightDate)= " + 1;
+						}
+					}
+				}
+			}
+			where += ") ";
+			String sql = "update FlightInfo set FlightScheduleID='"
+					+ newFlightScheduleID + "' where  " + where + ";";
+
+			try {
+				Session session = DataAccessObject.openSession();
+				session.beginTransaction();
+				Query query = session.createSQLQuery(sql);
+				query.executeUpdate();
+				session.getTransaction().commit();
+
+				sql = " update FlightSchedule set flag=-1  where flag=1  ";
+				sql += " and ID IN (" + oldFlightScheduleID + ") ";
+				sql += " and not exists(select 1 from FlightInfo where flag=1 and FlightInfo.FlightScheduleID=FlightSchedule.ID); ";
+
+				session = DataAccessObject.openSession();
+				session.beginTransaction();
+				query = session.createSQLQuery(sql);
+				query.executeUpdate();
+				session.getTransaction().commit();
+			} catch (Exception e) {
+				logger.info("updateFlightInfoReferenceByParam" + e.getMessage());
+			} finally {
+				DataAccessObject.closeSession();
+			}
+		}
+	}
+
+	public void saveFlightInfo(FlightInfo flightInfo) {
+		try {
 			dao.saveOrUpdate(flightInfo);
 		} catch (Exception err) {
 			logger.info("savrFlightInfo" + err.getMessage());
@@ -31,10 +85,9 @@ public class FlightInfoManager {
 			DataAccessObject.closeSession();
 		}
 	}
- 
 
 	public List<FlightInfo> getFlightInfos() {
- 
+
 		List<FlightInfo> flightInfos = new ArrayList<FlightInfo>();
 		try {
 			Query query = getFlightInfosQuery("a");

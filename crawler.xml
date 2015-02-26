@@ -33,7 +33,7 @@
 		<!-- spider thread num. default is 1 -->
 		<thread-num>20</thread-num>
 		<!-- one url max queue retry num. default is 1 -->
-		<cycle-retry-times>6</cycle-retry-times>
+		<cycle-retry-times>2</cycle-retry-times>
 		<!-- in one thread max interval between two request. default is 6000ms -->
 		<sleep-time>5000</sleep-time>
 		<!-- max time before request is terminate. default is 5000ms -->
@@ -50,5 +50,7 @@
 		<proxy-get-address>http://erwx.daili666.com/ip/?tid=559566142973866</proxy-get-address>
 		<!-- proxy retry time -->
 		<proxy-retry>1</proxy-retry>
+		<!--ahead-day defaule:30 -->
+		<ahead-day>30</ahead-day>		
 	</crawler-common>
 </root>

@@ -3,6 +3,7 @@ package us.codecraft.webmagic.downloader;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.Request.RequestStatus;
 import us.codecraft.webmagic.selector.Html;
 
 /**
@@ -39,6 +40,8 @@ public abstract class AbstractDownloader implements Downloader {
 	}
 
 	protected void onError(Request request) {
+		request.getExtras().put(Request.STATUS_ENUM,
+				RequestStatus.Fail_Download);
 	}
 
 	public Page addToCycleRetry(Request request, Site site) {
@@ -46,20 +49,26 @@ public abstract class AbstractDownloader implements Downloader {
 		Object cycleTriedTimesObject = request
 				.getExtra(Request.CYCLE_TRIED_TIMES);
 		if (cycleTriedTimesObject == null) {
-			page.addTargetRequest(request.setPriority(0).putExtra(
-					Request.CYCLE_TRIED_TIMES, 1));
+			page.addTargetRequest(request.setPriority(0)
+					.putExtra(Request.CYCLE_TRIED_TIMES, 1)
+					.putExtra(Request.STATUS_ENUM, RequestStatus.Init));
 		} else {
 			int cycleTriedTimes = (Integer) cycleTriedTimesObject;
 
 			cycleTriedTimes++;
 
 			if (cycleTriedTimes >= site.getCycleRetryTimes()) {
+				request.getExtras().put(Request.STATUS_ENUM,
+						RequestStatus.Fail_MaxRetry);
 				return null;
 			}
-			page.addTargetRequest(request.setPriority(0).putExtra(
-					Request.CYCLE_TRIED_TIMES, cycleTriedTimes));
+			page.addTargetRequest(request.setPriority(0)
+					.putExtra(Request.CYCLE_TRIED_TIMES, cycleTriedTimes)
+					.putExtra(Request.STATUS_ENUM, RequestStatus.Init));
 		}
 		page.setNeedCycleRetry(true);
+		request.getExtras().put(Request.STATUS_ENUM,
+				RequestStatus.Fail_Download);
 		return page;
 	}
 }

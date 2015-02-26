@@ -35,8 +35,7 @@ public class FlightSchedule {
 	private String DeptTerminal;
 	private boolean IsStopOver;
 	private String WeekSchedule;
-	private int Flag;
-	private String RequestParam;
+	private int Flag; 
 	private String SpiderID;
 	private int NewFlag;
 
@@ -248,13 +247,7 @@ public class FlightSchedule {
 		LastUpdate = lastUpdate;
 	}
 
-	public String getRequestParam() {
-		return RequestParam;
-	}
-
-	public void setRequestParam(String requestParam) {
-		RequestParam = requestParam;
-	}
+ 
 
 	@Override
 	public boolean equals(Object obj) {

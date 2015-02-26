@@ -37,9 +37,7 @@ public class ScheduleCtripPipline implements Pipeline {
 									flightSchedule.getArrTime()));
 					if (request != null) {
 						flightSchedule.setSpiderID(task.getSite()
-								.getDatabaseUUID());
-						flightSchedule.setRequestParam(String.format("url:%s",
-								request.getUrl()));
+								.getDatabaseUUID()); 
 					}
 					// city
 					City deptCity = new CityManager()

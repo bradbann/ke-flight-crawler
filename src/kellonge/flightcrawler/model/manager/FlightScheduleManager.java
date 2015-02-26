@@ -63,53 +63,93 @@ public class FlightScheduleManager {
 		}
 	}
 
+	/**
+	 * save info when exist old recorder,so make old recorder to history
+	 * 
+	 * @param newflightSchedule
+	 * @param flightScheduleOld
+	 */
+	public void saveFlightScheduleWithHistory(FlightSchedule newflightSchedule,
+			FlightSchedule flightScheduleOld) {
+		try {
+			FlightSchedule flightScheduleHistory = new FlightSchedule();
+
+			BeanUtils.copyProperties(flightScheduleHistory, flightScheduleOld);
+			flightScheduleHistory.setFlag(-1);
+			flightScheduleHistory.setID(null);
+			dao.saveOrUpdate(flightScheduleHistory);
+			String id = flightScheduleOld.getID();
+			Date createDate = flightScheduleOld.getCreateDate();
+			BeanUtils.copyProperties(flightScheduleOld, newflightSchedule);
+			flightScheduleOld.setID(id);
+			flightScheduleOld.setCreateDate(createDate);
+			flightScheduleOld.setNewFlag(2);
+			dao.saveOrUpdate(flightScheduleOld);
+		} catch (Exception err) {
+			logger.info("saveFlightScheduleWithHistory" + err.getMessage());
+		} finally {
+			DataAccessObject.closeSession();
+		}
+	}
+
 	public void saveFlightSchedule(FlightSchedule flightSchedule) {
-		List<FlightSchedule> list = getFlightSchedules(
-				flightSchedule.getFlightNo(),
-				flightSchedule.getDeptAirportID(),
-				flightSchedule.getArrAirportID(),
-				flightSchedule.getWeekSchedule());
-		if (list.size() > 0) {
+		try {
+			List<FlightSchedule> list = getFlightSchedules(
+					flightSchedule.getFlightNo(),
+					flightSchedule.getDeptAirportID(),
+					flightSchedule.getArrAirportID(), "");
+
 			// edit
-			FlightSchedule flightScheduleOld = list.get(0);
-			if (!flightSchedule.equals(flightScheduleOld)) {
-				// edit to insert new
-				FlightSchedule flightScheduleHistory = new FlightSchedule();
-				try {
-					BeanUtils.copyProperties(flightScheduleHistory,
-							flightScheduleOld);
-					flightScheduleHistory.setFlag(-1);
-					flightScheduleHistory.setID(null);
-					dao.saveOrUpdate(flightScheduleHistory);
-					String id = flightScheduleOld.getID();
-					Date createDate = flightScheduleOld.getCreateDate();
-					BeanUtils.copyProperties(flightScheduleOld, flightSchedule);
-					flightScheduleOld.setID(id);
-					flightScheduleOld.setCreateDate(createDate);
+			if (list.size() == 1) {
+				FlightSchedule flightScheduleOld = list.get(0);
+				if (!flightSchedule.equals(flightScheduleOld)) {
+					// edit to insert new
+					if (flightScheduleOld.getWeekSchedule().equals(
+							flightSchedule.getWeekSchedule())) {
+						saveFlightScheduleWithHistory(flightSchedule,
+								flightScheduleOld);
+					} else {
+						// add new
+						flightSchedule.setCreateDate(new Date());
+						flightSchedule.setNewFlag(2);
+						dao.saveOrUpdate(flightSchedule);
+					}
+				} else {
+					// edit to update old
+					flightScheduleOld.setSpiderID(flightSchedule.getSpiderID());
 					flightScheduleOld.setNewFlag(2);
 					dao.saveOrUpdate(flightScheduleOld);
-				} catch (Exception err) {
-					logger.info("savrFlightSchedule" + err.getMessage());
-				} finally {
-					DataAccessObject.closeSession();
 				}
-			} else {
-				// edit to update old
-				flightScheduleOld.setSpiderID(flightSchedule.getSpiderID());
-				flightScheduleOld.setNewFlag(2);
-				dao.saveOrUpdate(flightScheduleOld);
 			}
-		} else {
-			// add
-			try {
+			if (list.size() > 1) {
+				// add new
 				flightSchedule.setCreateDate(new Date());
 				flightSchedule.setNewFlag(2);
 				dao.saveOrUpdate(flightSchedule);
-			} catch (Exception err) {
-				logger.info("savrFlightSchedule" + err.getMessage());
-			} finally {
-				DataAccessObject.closeSession();
+				// update price reference
+				String ids = "";
+				for (int i = 0; i < list.size(); i++) {
+					if (i == 0) {
+						ids += "'" + list.get(i).getID() + "'";
+					} else {
+						ids += ",'" + list.get(i).getID() + "'";
+					}
+				}
+				new FlightInfoManager().updateFlightInfoReferenceByParam(
+						flightSchedule.getID(),
+						flightSchedule.getWeekSchedule(), ids);
 			}
+
+			// add
+			if (list.size() == 0) {
+				flightSchedule.setCreateDate(new Date());
+				flightSchedule.setNewFlag(2);
+				dao.saveOrUpdate(flightSchedule);
+			}
+		} catch (Exception err) {
+			logger.info("savrFlightSchedule" + err.getMessage());
+		} finally {
+			DataAccessObject.closeSession();
 		}
 	}
 
@@ -166,6 +206,24 @@ public class FlightScheduleManager {
 		return false;
 	}
 
+	public List<FlightSchedule> getNoPriceFlightSchedules(){
+		List<FlightSchedule> flightSchedules = new ArrayList<FlightSchedule>();
+		try {
+			String hql=" select fs  from FlightSchedule fs where fs.Flag=1 and not exists(select 1 from FlightInfo fi where fi.FlightScheduleID=fs.ID)   ";
+			Query query = DataAccessObject.openSession().createQuery(hql);
+			flightSchedules = query.list();
+			for (FlightSchedule flightSchedule : flightSchedules) {
+				extendFlightSchedule(flightSchedule);
+			}
+		} catch (Exception e) {
+			logger.info("getNoPriceFlightSchedules" + e.getMessage());
+		} finally {
+			DataAccessObject.closeSession();
+		}
+
+		return flightSchedules;
+	}
+	
 	private Query getFlightSchedulesQuery(String strChange, String strFlightNo,
 			String strDeptAirportID, String strArrAirportID,
 			String strWeekSchedule) {

@@ -30,8 +30,7 @@
 		<property name="ArrTerminal" type="string" />
 		<property name="DeptTerminal" type="string" />
 		<property name="IsStopOver" type="boolean" />
-		<property name="WeekSchedule" type="string" />
-		<property name="RequestParam" type="string" />
+		<property name="WeekSchedule" type="string" /> 
 		<property name="SpiderID" type="string" />
 		<property name="Flag" type="int" />
 		<property name="NewFlag" type="int" />

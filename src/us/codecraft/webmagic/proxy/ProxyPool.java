@@ -136,8 +136,8 @@ public class ProxyPool {
 	private Map<String, Proxy> prepareForSaving() {
 		Map<String, Proxy> tmp = new HashMap<String, Proxy>();
 		for (Entry<String, Proxy> e : allProxy.entrySet()) {
+
 			Proxy p = e.getValue();
-			p.setFailedNum(0);
 			tmp.put(e.getKey(), p);
 		}
 		return tmp;
@@ -236,80 +236,83 @@ public class ProxyPool {
 	}
 
 	public void returnProxy(HttpHost host, int statusCode) {
-		Proxy p = allProxy.get(host.getAddress().getHostAddress());
-		if (p == null) {
-			return;
-		}
-		switch (statusCode) {
-		case Proxy.SUCCESS:
-			p.setReuseTimeInterval(reuseInterval);
-			p.setFailedNum(0);
-			p.setFailedErrorType(new ArrayList<Integer>());
-			p.recordResponse();
-			p.successNumIncrement(1);
-			break;
-		case Proxy.ERROR_403:
-			// banned,try longer interval
-			p.fail(Proxy.ERROR_403);
-			p.setReuseTimeInterval(reuseInterval * p.getFailedNum());
-			logger.info(host + " >>>> reuseTimeInterval is >>>> "
-					+ p.getReuseTimeInterval() / 1000.0);
-			break;
-		case Proxy.ERROR_BANNED:
-			p.fail(Proxy.ERROR_BANNED);
-			p.setReuseTimeInterval(10 * 60 * 1000 * p.getFailedNum());
-			logger.warn("this proxy is banned >>>> " + p.getHttpHost());
-			logger.info(host + " >>>> reuseTimeInterval is >>>> "
-					+ p.getReuseTimeInterval() / 1000.0);
-			break;
-		case Proxy.ERROR_404:
-			p.fail(Proxy.ERROR_404);
-			p.setReuseTimeInterval(reuseInterval * p.getFailedNum());
-			logger.info(host + " >>>> reuseTimeInterval is >>>> "
-					+ p.getReuseTimeInterval() / 1000.0);
-			break;
-		default:
-			p.fail(statusCode);
-			break;
-		}
-		// System.out.println(allProxyStatus());
-		if (p.getFailedNum() > Configuration.getProxyPoolItemRetry()) {
-			p.setReuseTimeInterval(reviveTime);
-			allProxy.remove(p.getHttpHost().getAddress().getHostAddress());
-			if (proxyQueue.contains(p)) {
-				proxyQueue.remove(p);
-			}
-			if (isWebGet) {
-				checkAndGetProxyFromWeb();
-			}
-			logger.error("remove proxy >>>> " + host + ">>>>"
-					+ p.getFailedType() + " >>>> remain proxy >>>> "
-					+ proxyQueue.size());
-			saveProxyList();
-			return;
-		}
-		// if (p.getFailedNum() > 0 && p.getFailedNum() % 5 == 0) {
-		// if (!ProxyValidate.isValid(host.getAddress().getHostAddress(),
-		// host.getPort())) {
-		// allProxy.remove(p.getHttpHost().getAddress().getHostAddress());
-		// p.setReuseTimeInterval(reviveTime);
-		// logger.error("remove proxy >>>> " + host + ">>>>"
-		// + p.getFailedType() + " >>>> remain proxy >>>> "
-		// + proxyQueue.size());
-		// return;
-		// }
-		// }
 		try {
+			Proxy p = allProxy.get(host.getAddress().getHostAddress());
+			if (p == null) {
+				return;
+			}
+			switch (statusCode) {
+			case Proxy.SUCCESS:
+				p.setReuseTimeInterval(reuseInterval);
+				p.setFailedNum(0);
+				p.setFailedErrorType(new ArrayList<Integer>());
+				p.recordResponse();
+				p.successNumIncrement(1);
+				break;
+			case Proxy.ERROR_403:
+				// banned,try longer interval
+				p.fail(Proxy.ERROR_403);
+				p.setReuseTimeInterval(reuseInterval * p.getFailedNum());
+				logger.info(host + " >>>> reuseTimeInterval is >>>> "
+						+ p.getReuseTimeInterval() / 1000.0);
+				break;
+			case Proxy.ERROR_BANNED:
+				p.fail(Proxy.ERROR_BANNED);
+				p.setReuseTimeInterval(10 * 60 * 1000 * p.getFailedNum());
+				logger.warn("this proxy is banned >>>> " + p.getHttpHost());
+				logger.info(host + " >>>> reuseTimeInterval is >>>> "
+						+ p.getReuseTimeInterval() / 1000.0);
+				break;
+			case Proxy.ERROR_404:
+				p.fail(Proxy.ERROR_404);
+				p.setReuseTimeInterval(reuseInterval * p.getFailedNum());
+				logger.info(host + " >>>> reuseTimeInterval is >>>> "
+						+ p.getReuseTimeInterval() / 1000.0);
+				break;
+			default:
+				p.fail(statusCode);
+				break;
+			}
+			// System.out.println(allProxyStatus());
+			if (p.getFailedNum() > Configuration.getProxyPoolItemRetry()) {
+				p.setReuseTimeInterval(reviveTime);
+				allProxy.remove(p.getHttpHost().getAddress().getHostAddress());
+				if (proxyQueue.contains(p)) {
+					proxyQueue.remove(p);
+				}
+				if (isWebGet) {
+					checkAndGetProxyFromWeb();
+				}
+				logger.error("remove proxy >>>> " + host + ">>>>"
+						+ p.getFailedType() + " >>>> remain proxy >>>> "
+						+ proxyQueue.size());
+				saveProxyList();
+				return;
+			}
+			// if (p.getFailedNum() > 0 && p.getFailedNum() % 5 == 0) {
+			// if (!ProxyValidate.isValid(host.getAddress().getHostAddress(),
+			// host.getPort())) {
+			// allProxy.remove(p.getHttpHost().getAddress().getHostAddress());
+			// p.setReuseTimeInterval(reviveTime);
+			// logger.error("remove proxy >>>> " + host + ">>>>"
+			// + p.getFailedType() + " >>>> remain proxy >>>> "
+			// + proxyQueue.size());
+			// return;
+			// }
+			// }
+
 			if (!proxyQueue.contains(p)
 					&& allProxy.containsKey(host.getAddress().getHostAddress())) {
 				proxyQueue.put(p);
 			}
+
+			if (isWebGet) {
+				checkAndGetProxyFromWeb();
+			}
 		} catch (InterruptedException e) {
 			logger.warn("proxyQueue return proxy error", e);
 		}
-		if (isWebGet) {
-			checkAndGetProxyFromWeb();
-		}
+
 	}
 
 	public String allProxyStatus() {

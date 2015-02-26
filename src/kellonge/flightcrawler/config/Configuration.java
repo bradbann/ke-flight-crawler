@@ -41,6 +41,7 @@ public class Configuration {
 	private static boolean AutoRestart = false;
 	private static String SpiderName = "";
 	private static String ProxyGetAddress = "";
+	private static int AHeadDay = 30;
 
 	/**
 	 * 初始化配置
@@ -168,6 +169,11 @@ public class Configuration {
 				setProxyPoolItemRetry(Utility.toSafeInt(proxyRetry.getText()
 						.trim()));
 			}
+
+			Node aHeadDay = doc.selectSingleNode("//crawler-common/ahead-day");
+			if (aHeadDay != null && !aHeadDay.getText().equals("")) {
+				setAHeadDay(Utility.toSafeInt(aHeadDay.getText().trim()));
+			}
 		} catch (DocumentException | IOException e) {
 			logger.warn("init config faild", e);
 		} catch (Exception e) {
@@ -261,6 +267,14 @@ public class Configuration {
 
 	public static void setProxyPoolItemRetry(int proxyPoolItemRetry) {
 		ProxyPoolItemRetry = proxyPoolItemRetry;
+	}
+
+	public static int getAHeadDay() {
+		return AHeadDay;
+	}
+
+	public static void setAHeadDay(int aHeadDay) {
+		AHeadDay = aHeadDay;
 	}
 
 }

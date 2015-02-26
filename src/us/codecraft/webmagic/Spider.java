@@ -7,6 +7,7 @@ import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import us.codecraft.webmagic.Request.RequestStatus;
 import us.codecraft.webmagic.downloader.AbstractDownloader;
 import us.codecraft.webmagic.downloader.Downloader;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
@@ -325,10 +326,11 @@ public class Spider implements Runnable, Task {
 					@Override
 					public void run() {
 						try {
+							requestFinal.getExtras().put(Request.STATUS_ENUM,
+									RequestStatus.Processing);
 							processRequest(requestFinal);
 						} catch (Exception e) {
 							onError(requestFinal);
-							e.printStackTrace();
 							logger.error("process request " + requestFinal
 									+ " error", e);
 						} finally {
@@ -442,7 +444,7 @@ public class Spider implements Runnable, Task {
 			processRequestExt(request);
 		}
 		// for cycle retry
-		if (page.isPageBizError()  ) {
+		if (page.isNeedCycleRetry()) {
 			AbstractDownloader a = (AbstractDownloader) downloader;
 			page = a.addToCycleRetry(request, site);
 			if (page == null) {
@@ -763,6 +765,14 @@ public class Spider implements Runnable, Task {
 
 	public Spider setSpiderListeners(List<SpiderListener> spiderListeners) {
 		this.spiderListeners = spiderListeners;
+		return this;
+	}
+	
+	public Spider addSpiderListener(SpiderListener spiderListener) {
+		if (spiderListeners==null ) {
+			spiderListeners=new ArrayList<SpiderListener>();
+		}
+		spiderListeners.add(spiderListener);
 		return this;
 	}
 

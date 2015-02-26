@@ -44,8 +44,6 @@ public class Page {
 	private int statusCode;
 
 	private boolean needCycleRetry;
-	
-	private boolean pageBizError;
 
 	private List<Request> targetRequests = new ArrayList<Request>();
 
@@ -233,14 +231,6 @@ public class Page {
 				+ ", rawText='" + rawText + '\'' + ", url=" + url
 				+ ", statusCode=" + statusCode + ", targetRequests="
 				+ targetRequests + '}';
-	}
-
-	public boolean isPageBizError() {
-		return pageBizError;
-	}
-
-	public void setPageBizError(boolean pageBizError) {
-		this.pageBizError = pageBizError;
 	}
 
 }
